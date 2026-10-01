@@ -1,11 +1,24 @@
-<div align="center">
+# 01–80 Number Draw SaaS
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+A web + Telegram platform based on an 80-number draw board.
 
-  <h1>Built with AI Studio</h2>
+## Core concept
+- Numbers 01–80 are displayed for each draw/round.
+- Players select available numbers.
+- The system calculates the selection total.
+- Players pay directly to the operator/admin using supported payment methods.
+- Players submit payment reference/details.
+- Admin verifies payment.
+- Verified numbers become locked.
+- When the round closes, an auditable random draw determines the result.
+- The platform records the round, selections, payments, and result.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+> The paid random-draw model may be regulated as gambling/lottery/raffle activity. Confirm the applicable Ethiopian legal, licensing, payment, tax, age, advertising, and consumer-protection requirements before operating real-money draws.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+## Product surfaces
+1. Public website
+2. Player account area
+3. Telegram bot
+4. Admin dashboard
+5. Backend API
+6. Database

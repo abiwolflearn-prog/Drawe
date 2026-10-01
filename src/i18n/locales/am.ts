@@ -1,0 +1,178 @@
+/**
+ * Amharic (አማርኛ) Translation Dictionary — Default Locale
+ */
+export const am = {
+  // Brand & App
+  brand: {
+    name: '01–80 የቁጥር ዕጣ',
+    subtitle: 'የዌብ እና ቴሌግራም የቁጥር ዕጣ ፕላትፎርም',
+    complianceNotice: 'የህግ ማሳሰቢያ፡ ቀጥታ የክፍያ ማረጋገጫዎች በፕላትፎርም አድሚኖች በእጅ የሚመረመሩ ናቸው። ከእውነተኛ ገንዘብ ዕጣዎች በፊት የሚመለከታቸውን የኢትዮጵያ ህጋዊ እና ፍቃድ መስፈርቶች ያረጋግጡ።',
+    rightsReserved: 'መብቱ በህግ የተጠበቀ ነው።',
+  },
+
+  // Language Selector
+  lang: {
+    select: 'ቋንቋ ይምረጡ',
+    amharic: 'አማርኛ',
+    english: 'English',
+  },
+
+  // Navigation
+  nav: {
+    home: 'መነሻ',
+    activeDraw: 'የአሁኑ ዕጣ',
+    results: 'ውጤቶች Archive',
+    howItWorks: 'እንዴት ይሰራል?',
+    mySelections: 'የእኔ ምርጫዎች',
+    adminPortal: 'የአድሚን ፖርታል',
+    login: 'ግባ',
+    register: 'ይመዝገቡ',
+    logout: 'ውጣ',
+    profile: 'መገለጫ',
+    settings: 'ቅንብሮች',
+  },
+
+  // Common UI
+  common: {
+    continue: 'ቀጥል',
+    confirm: 'አረጋግጥ',
+    cancel: 'ሰርዝ',
+    submit: 'ላክ',
+    back: 'ተመለስ',
+    next: 'ቀጣይ',
+    clear: 'አፅዳ',
+    copy: 'ኮፒ',
+    copied: 'ተኮፒዟል',
+    loading: 'በመጫን ላይ...',
+    error: 'ስህተት',
+    success: 'ተሳክቷል',
+    currencySymbol: 'ብር',
+    pricePerNumber: 'የአንድ ቁጥር ዋጋ',
+    totalAmount: 'ጠቅላላ መጠን',
+    closesIn: 'ቀሪ ጊዜ',
+    available: 'ክፍት',
+    actionRequired: 'ትኩረት ያስፈልጋል',
+    view: 'ተመልከት',
+    close: 'ዝጋ',
+  },
+
+  // Draw & Board
+  draw: {
+    round: 'ዙር',
+    liveRound: 'ቀጥታ ዙር',
+    availableNumbers: 'ክፍት ቁጥሮች',
+    selectNumberInstruction: 'ዕጣው ውስጥ ለመግባት ከላይ ከሚታዩት ሰሌዳ ላይ ክፍት ቁጥሮችን ይምረጡ',
+    legendAvailable: 'ክፍት',
+    legendSelected: 'የተመረጠ',
+    legendPending: 'ክፍያ በሂደት ላይ',
+    legendConfirmed: 'የተረጋገጠ (የተያዘ)',
+    legendWinner: 'አሸናፊ ቁጥር',
+    selectedCount: 'የተመረጡ ቁጥሮች',
+    maxSelectionsLimit: 'በአንድ ዙር ቢበዛ 10 ቁጥሮችን መምረጥ ይቻላል።',
+    directPaymentGuarantees: 'በቴሌብር ወይም በንግድ ባንክ ቀጥታ ለአድሚን የሚደረግ ክፍያ',
+    instantLock: 'የአድሚን ማረጋገጫ እና ወዲያውኑ ቁጥር መቆለፍ',
+    auditableResults: 'ግልፅ እና ታማኝ የዕጣ ውጤቶች',
+  },
+
+  // Payment Flow
+  payment: {
+    title: 'ቀጥታ የአድሚን ክፍያ እና መረጃ',
+    selectMethod: '1. የክፍያ መንገድ ይምረጡ',
+    enterReference: '2. የግብይት ማጣቀሻ ቁጥር ያስገቡ',
+    refLabel: 'የግብይት ማጣቀሻ ID (Transaction Ref)',
+    refPlaceholder: 'ምሳሌ፡ TXN-984720192 ወይም CBE-82910',
+    refHelper: 'ከቴሌብር ወይም ከባንክ የደረሰዎት አጭር የጽሁፍ መልዕክት (SMS) ላይ ያለውን ማጣቀሻ ቁጥር ያስገቡ።',
+    screenshotUrl: 'የደረሰኝ ፎቶ ሊንክ (አማራጭ)',
+    guaranteeNotice: 'ክፍያው ቀጥታ በፕላትፎርሙ አድሚን ይረጋገጣል። የመረጧቸው ቁጥሮች ክፍያ በሂደት ላይ በሚል ተይዘው ሲረጋገጡ ሙሉ በሙሉ የእርስዎ ይሆናሉ።',
+    submitBtn: 'የክፍያ መረጃ ለአድሚን ማረጋገጫ ላክ',
+    submitting: 'በመላክ ላይ...',
+    submittedTitle: 'የክፍያ መረጃዎ ተልኳል!',
+    submittedMessage: 'የክፍያ ማጣቀሻ ቁጥርዎ ተመዝግቧል። የአድሚን ማረጋገጫ ከተደረገ በኋላ የመረጧቸው ቁጥሮች ይረጋገጣሉ።',
+    viewMySelections: 'የእኔን ምርጫዎች ተመልከት',
+    statusPending: 'ክፍያ በማረጋገጥ ላይ',
+    statusApproved: 'ክፍያ ተረጋግጧል',
+    statusRejected: 'ክፍያ ተቀባይነት አላገኘም',
+    operatorProvider: 'አገልግሎት ሰጪ',
+    operatorAccountName: 'የአካውንት ስም',
+    operatorAccountNo: 'የአካውንት / ስልክ ቁጥር',
+  },
+
+  // Player Dashboard
+  player: {
+    dashboardTitle: 'የተጫዋች መለያ ዳሽቦርድ',
+    mySubmissions: 'የእኔ የቀጥታ ክፍያ ማመልከቻዎች',
+    noSubmissions: 'እስካሁን ያረጋገጡት ክፍያ የለም',
+    noSubmissionsSub: 'በቀጥታ የዕጣ ዙር ለመሳተፍ ከዋናው ሰሌዳ ላይ ክፍት ቁጥሮችን ይምረጡ።',
+    amountPaid: 'ተከፍሏል',
+    selectedNums: 'የተመረጡ ቁጥሮች',
+  },
+
+  // Admin Portal
+  admin: {
+    portalTitle: 'የአድሚን ቁጥጥር ማዕከል',
+    dashboard: 'ዳሽቦርድ',
+    draws: 'ዕጣዎች',
+    numbersBoard: 'የቁጥሮች ሰሌዳ',
+    paymentsQueue: 'የክፍያ ማረጋገጫ Queue',
+    players: 'ተጫዋቾች',
+    winners: 'አሸናፊዎች',
+    results: 'የዕጣ ውጤቶች',
+    reports: 'ሪፖርቶች',
+    auditLogs: 'የኦዲት መዝገቦች',
+    settings: 'ቅንብሮች',
+    metricTotalCollected: 'የተሰበሰበ ጠቅላላ ገንዘብ',
+    metricPendingApprovals: 'ማረጋገጫ የሚጠብቁ',
+    metricConfirmedNumbers: 'የተረጋገጡ ቁጥሮች',
+    metricAvailableNumbers: 'ክፍት ቁጥሮች',
+    queueTitle: 'ማረጋገጫ የሚጠብቁ ክፍያዎች Queue',
+    noPending: 'ሁሉም የክፍያ ማመልከቻዎች ተመርምረዋል!',
+    noPendingSub: 'ማረጋገጫ የሚጠብቅ አዲስ የክፍያ መረጃ የለም።',
+    approveBtn: 'አረጋግጥ',
+    rejectBtn: 'ሰርዝ',
+    tablePlayer: 'ተጫዋች',
+    tableNumbers: 'ቁጥሮች',
+    tableAmountMethod: 'መጠን እና መንገድ',
+    tableRef: 'የግብይት Ref',
+    tableStatus: 'ሁኔታ',
+    tableActions: 'እርምጃዎች',
+    auditTitle: 'የሲስተም ኦዲት ታሪክ',
+    auditSub: 'የአድሚን ክፍያ ማረጋገጫዎች፣ ውድቅ ማድረጎች እና የዕጣ ሂደቶች ኦዲት መዝገብ።',
+  },
+
+  // Results & History
+  results: {
+    title: 'የዕጣ ውጤቶች እና ያለፉ አሸናፊዎች',
+    subTitle: 'ሁሉም አሸናፊ ቁጥሮች በሲስተሙ ሰርቨር ላይ በሚስጥራዊ ዘዴ የሚወጡ እና በኦዲት መዝገብ የሚቀመጡ ናቸው።',
+    latestWinner: 'የቅርብ ጊዜ ዕጣ አሸናፊ',
+    winningNumberLabel: 'አሸናፊ ቁጥር',
+    prizeAmountLabel: 'የሽልማት መጠን',
+    archiveTitle: 'ያለፉ ዙሮች ታሪክ Archive',
+  },
+
+  // Auth & Account
+  auth: {
+    loginTitle: 'ወደ መለያዎ ይግቡ',
+    loginSub: 'የመረጧቸውን ቁጥሮች ለማስተዳደር እና የክፍያ መረጃ ለመላክ ይግቡ።',
+    registerTitle: 'አዲስ የተጫዋች መለያ ይክፈቱ',
+    registerSub: 'በቀጥታ 01–80 ዕጣዎች ላይ ለመሳተፍ ይመዝገቡ።',
+    fullName: 'ሙሉ ስም',
+    email: 'ኢሜይል አድራሻ',
+    phone: 'ስልክ ቁጥር',
+    password: 'የይለፍ ቃል',
+    signInBtn: 'ግባ',
+    registerBtn: 'ይመዝገቡ',
+    noAccount: 'መለያ የለዎትም?',
+    hasAccount: 'ቀደም ሲል መለያ አለዎት?',
+    createAccountLink: 'አዲስ መለያ ይክፈቱ',
+    demoShortcut: 'የሙከራ አካውንት አቋራጭ',
+  },
+
+  // Errors
+  errors: {
+    selectAtLeastOne: 'እባክዎ ቢያንስ አንድ ቁጥር ይምረጡ።',
+    numberTaken: 'ይህ ቁጥር ከአሁን በኋላ ክፍት አይደለም።',
+    refRequired: 'እባክዎ ትክክለኛ የግብይት ማጣቀሻ ቁጥር ያስገቡ።',
+    loginRequired: 'የክፍያ መረጃ ለመላክ እባክዎ በመጀመሪያ ይግቡ።',
+    networkError: 'የኔትወርክ ስህተት ተከስቷል። እባክዎ እንደገና ይሞክሩ።',
+  },
+};

@@ -1,0 +1,6 @@
+{
+  "name": "01–80 Number Draw SaaS",
+  "description": "Web and Telegram 01–80 Number Draw Platform specifications, architecture, and system documentation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
