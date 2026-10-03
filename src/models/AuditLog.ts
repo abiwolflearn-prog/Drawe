@@ -5,6 +5,7 @@ export interface IAuditLogDocument extends Omit<IAuditLog, '_id'>, Document {}
 
 const AuditLogSchema: Schema = new Schema(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant' }, // Nullable for platform-wide Super Admin actions
     actorId: { type: String, required: true },
     actorName: { type: String, required: true },
     action: { type: String, required: true },

@@ -8,6 +8,7 @@ const UserSchema: Schema = new Schema(
     name: { type: String, required: true },
     phone: { type: String, default: '' },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant' },
     passwordHash: { type: String, required: true },
     telegramUserId: { type: String, default: '' },
     role: { type: String, enum: ['PLAYER', 'ADMIN', 'SUPER_ADMIN'], default: 'PLAYER' },

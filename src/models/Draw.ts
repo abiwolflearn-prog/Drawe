@@ -5,7 +5,8 @@ export interface IDrawDocument extends Omit<IDraw, '_id'>, Document {}
 
 const DrawSchema: Schema = new Schema(
   {
-    drawNumber: { type: Number, required: true, unique: true },
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
+    drawNumber: { type: Number, required: true },
     title: { type: String, required: true },
     status: { 
       type: String, 
@@ -18,7 +19,13 @@ const DrawSchema: Schema = new Schema(
     maxSelectionsPerPlayer: { type: Number, default: 10 },
     startAt: { type: Date, required: true },
     closeAt: { type: Date, required: true },
+    serverSeedHash: { type: String, default: '' },
+    serverSeed: { type: String, default: '' },
     winnerNumber: { type: Number, default: null },
+    winnerPlayerId: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+    winnerPlayerName: { type: String, default: '' },
+    prizeAmount: { type: Number, default: 0 },
+    drawExecutedAt: { type: Date, default: null },
     resultPublishedAt: { type: Date, default: null },
   },
   { timestamps: true }

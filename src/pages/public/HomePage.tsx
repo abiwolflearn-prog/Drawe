@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Header } from '../../components/layout/Header.js';
 import { Footer } from '../../components/layout/Footer.js';
+import { TelegramMiniAppBanner } from '../../components/telegram/TelegramMiniAppBanner.js';
 import { RoundHeaderCard } from '../../components/draw/RoundHeaderCard.js';
 import { NumberBoardGrid } from '../../components/number-board/NumberBoardGrid.js';
 import { BoardLegend } from '../../components/number-board/BoardLegend.js';
@@ -52,6 +53,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col selection:bg-rose-500 selection:text-white">
+      <TelegramMiniAppBanner />
       <Header />
 
       <main className="flex-1 mx-auto max-w-5xl w-full p-4 sm:p-6 space-y-6">

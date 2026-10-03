@@ -1,30 +1,10 @@
-# SECURITY
+# SECURITY & AUDIT ARCHITECTURE
 
-## Authentication
-- Hash passwords with a modern password hashing algorithm.
-- Secure cookies/tokens.
-- Rate-limit login.
-- Protect admin routes.
-
-## Number integrity
-Number selection must be transactional/atomic enough to prevent double assignment.
-
-## Payment integrity
-A player-submitted reference is evidence for review, not automatic proof of payment.
-
-## Draw integrity
-- Use a cryptographically secure random source.
-- Record draw timestamp.
-- Record the exact eligible-number set.
-- Record operator/action metadata.
-- Prevent result modification after publication without a privileged, audited correction process.
-
-## Abuse protection
-- Rate limits
-- CAPTCHA where appropriate
-- Duplicate-reference detection
-- Suspicious activity logs
-- Admin action audit trail
-
-## Privacy
-Collect only necessary player information and define retention/deletion rules appropriate to the applicable law.
+1. **Provably Fair SHA-256 Commitments**:
+   - Public seed hash published prior to draw execution.
+   - Secret seed revealed after execution for independent player verification.
+2. **Tenant Isolation**:
+   - Admins can only query and mutate their own tenant data.
+   - Super Admin cannot modify historical operator transaction amounts or ticket prices.
+3. **Audit Trails**:
+   - All state transitions (`CREATE_DRAW`, `OPEN_DRAW`, `CLOSE_DRAW`, `APPROVE_PAYMENT`, `DRAW_EXECUTED`) logged in immutable audit records.

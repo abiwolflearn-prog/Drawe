@@ -1,52 +1,40 @@
 import { Router, Request, Response } from 'express';
-import { isFallbackStore } from '../../db/connect.js';
+import { generateSeedCommitment, verifyServerSeedCommitment, calculateWinningNumber } from '../utils/cryptoDraw.js';
+import { defaultDraw, defaultNumbersMap, memoryWinners } from '../store.js';
 
 const router = Router();
-
-// In-memory initial draw state for sandbox/fallback
-const defaultDraw = {
-  _id: 'draw_round_001',
-  id: 'draw_round_001',
-  drawNumber: 1,
-  title: 'Round #001 — Standard 01–80 Draw',
-  status: 'OPEN',
-  numberFrom: 1,
-  numberTo: 80,
-  pricePerNumber: 50, // 50 ETB per number
-  maxSelectionsPerPlayer: 10,
-  startAt: new Date(Date.now() - 3600000).toISOString(),
-  closeAt: new Date(Date.now() + 86400000 * 2).toISOString(), // Closes in 2 days
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
-
-// Initial numbers state for Round #001
-const defaultNumbersMap = new Map<number, any>();
-for (let i = 1; i <= 80; i++) {
-  // Demo taken numbers to demonstrate visual states
-  let status: string = 'AVAILABLE';
-  let selectedBy = undefined;
-
-  if ([5, 12, 33, 42, 78].includes(i)) {
-    status = 'CONFIRMED';
-    selectedBy = { id: 'usr_other', name: 'Verified Player' };
-  } else if ([19, 54].includes(i)) {
-    status = 'PAYMENT_PENDING';
-    selectedBy = { id: 'usr_demo', name: 'Pending Review' };
-  }
-
-  defaultNumbersMap.set(i, {
-    _id: `num_${i}`,
-    drawId: 'draw_round_001',
-    number: i,
-    status,
-    selectedBy,
-  });
-}
 
 // GET /api/draws
 router.get('/', (req: Request, res: Response) => {
   return res.json({ draws: [defaultDraw] });
+});
+
+// GET /api/draws/results/history
+router.get('/results/history', (req: Request, res: Response) => {
+  return res.json({ winners: memoryWinners });
+});
+
+// GET /api/draws/:id/verify — Cryptographic Provably Fair Verification Endpoint
+router.get('/:id/verify', (req: Request, res: Response) => {
+  const isCompleted = defaultDraw.status === 'COMPLETED';
+  const revealedSeed = isCompleted ? defaultDraw.serverSeed : null;
+
+  const verificationResult = isCompleted && revealedSeed
+    ? {
+        isMatch: verifyServerSeedCommitment(revealedSeed, defaultDraw.serverSeedHash),
+        calculatedNumber: calculateWinningNumber(revealedSeed, defaultDraw._id),
+      }
+    : null;
+
+  return res.json({
+    drawId: defaultDraw._id,
+    title: defaultDraw.title,
+    status: defaultDraw.status,
+    serverSeedHash: defaultDraw.serverSeedHash,
+    revealedSeed,
+    winningNumber: defaultDraw.winnerNumber,
+    verification: verificationResult,
+  });
 });
 
 // GET /api/draws/:id

@@ -1,102 +1,18 @@
-# PROJECT PLAN
+# PROJECT PLAN — 01–80 Multi-Tenant SaaS Draw Platform
 
-## Phase 0 — Product definition
-- [ ] Confirm business rules
-- [ ] Confirm number range: 01–80
-- [ ] Confirm price per number
-- [ ] Confirm round lifecycle
-- [ ] Confirm prize calculation
-- [ ] Confirm payment methods
-- [ ] Confirm cancellation/refund rules
-- [ ] Confirm legal/compliance requirements
+## Core Architectural Principle
+> **Draw capacity (1–1000) and draw pricing (ETB) are controlled exclusively by the ADMIN/OPERATOR, not SUPER_ADMIN.**
+> SUPER_ADMIN manages the SaaS platform (tenant activation, platform metrics, audit logging) and MUST NOT configure an operator's draw price or capacity.
 
-## Phase 1 — Foundation
-- [ ] Monorepo/project structure
-- [ ] Backend API
-- [ ] Database connection
-- [ ] Authentication
-- [ ] Role system: PLAYER, ADMIN, SUPER_ADMIN
-- [ ] Environment configuration
-- [ ] Error handling
-- [ ] Logging
+## Phase Overview
+- **Phase 0:** Product Architecture & Technical Specification (Complete)
+- **Phase 1:** Multi-Tenant SaaS, Amharic-First i18n, & Operator Discovery Directory (Complete)
+- **Phase 2:** Cryptographic Draw Engine & Provably Fair Random Seed Logic (Complete)
+- **Phase 3:** Real-Time Socket.IO Synchronization & Collaborative Board State (Complete)
+- **Phase 4:** Telegram Bot Integration & Mini App Sync (Amharic Default) (Complete)
+- **Phase 5:** Admin-Configurable Capacity (1–1000), Pricing, Multi-Winner Prizes & Security Hardening (Complete)
 
-## Phase 2 — Draw engine
-- [ ] Create round
-- [ ] Generate 01–80 numbers
-- [ ] Number availability state
-- [ ] Reserve/hold workflow
-- [ ] Payment-pending state
-- [ ] Payment-approved state
-- [ ] Release expired/unapproved reservations
-- [ ] Close round
-- [ ] Execute auditable random draw
-- [ ] Store immutable result
-- [ ] Winner record
-
-## Phase 3 — Player website
-- [ ] Landing page
-- [ ] Active draws
-- [ ] 01–80 number board
-- [ ] Number selection
-- [ ] Checkout/payment instructions
-- [ ] Payment submission
-- [ ] My selections
-- [ ] Payment status
-- [ ] Draw result/history
-- [ ] Profile
-
-## Phase 4 — Admin
-- [ ] Dashboard
-- [ ] Round management
-- [ ] Number board
-- [ ] Payment verification
-- [ ] Player management
-- [ ] Winner management
-- [ ] Draw controls
-- [ ] Reports
-- [ ] Audit log
-- [ ] Settings
-
-## Phase 5 — Telegram
-- [ ] /start
-- [ ] Account linking
-- [ ] Active rounds
-- [ ] Number selection
-- [ ] Selection summary
-- [ ] Payment instructions
-- [ ] Payment submission
-- [ ] Status notifications
-- [ ] Draw/result notification
-- [ ] Admin notification channel
-
-## Phase 6 — Security and reliability
-- [ ] Server-side authorization
-- [ ] Rate limiting
-- [ ] Input validation
-- [ ] Duplicate payment protection
-- [ ] Race-condition protection for numbers
-- [ ] Audit logging
-- [ ] Secure random draw implementation
-- [ ] Backup/restore
-- [ ] Monitoring
-
-## Phase 7 — Testing
-- [ ] Unit tests
-- [ ] API tests
-- [ ] Draw-engine tests
-- [ ] Payment workflow tests
-- [ ] Concurrent number-selection tests
-- [ ] Telegram tests
-- [ ] E2E tests
-- [ ] Production smoke test
-
-## Phase 8 — Deployment
-- [ ] Production database
-- [ ] Backend deployment
-- [ ] Website deployment
-- [ ] Telegram webhook
-- [ ] Domain
-- [ ] HTTPS
-- [ ] Environment secrets
-- [ ] Monitoring
-- [ ] Backup schedule
+## Roles & Responsibilities
+- **SUPER_ADMIN**: Manages SaaS tenant accounts, platform activation/suspension, global security logs, and platform stats.
+- **ADMIN/OPERATOR**: Controls their community, creates draws, configures capacity (1–1000), sets ticket prices (ETB), sets winner positions and prizes, verifies payments, and executes cryptographic draws.
+- **PLAYER**: Belongs to tenant communities via `PlayerMembership`, selects available entries, pays operator directly, and verifies SHA-256 draw proofs.

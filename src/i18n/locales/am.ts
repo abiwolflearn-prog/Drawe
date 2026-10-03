@@ -4,8 +4,8 @@
 export const am = {
   // Brand & App
   brand: {
-    name: '01–80 የቁጥር ዕጣ',
-    subtitle: 'የዌብ እና ቴሌግራም የቁጥር ዕጣ ፕላትፎርም',
+    name: 'አደይ ዕጣ',
+    subtitle: 'የአደይ ዕጣ ዌብ እና ቴሌግራም ፕላትፎርም',
     complianceNotice: 'የህግ ማሳሰቢያ፡ ቀጥታ የክፍያ ማረጋገጫዎች በፕላትፎርም አድሚኖች በእጅ የሚመረመሩ ናቸው። ከእውነተኛ ገንዘብ ዕጣዎች በፊት የሚመለከታቸውን የኢትዮጵያ ህጋዊ እና ፍቃድ መስፈርቶች ያረጋግጡ።',
     rightsReserved: 'መብቱ በህግ የተጠበቀ ነው።',
   },
@@ -21,6 +21,7 @@ export const am = {
   nav: {
     home: 'መነሻ',
     activeDraw: 'የአሁኑ ዕጣ',
+    operators: 'አዘጋጆች',
     results: 'ውጤቶች Archive',
     howItWorks: 'እንዴት ይሰራል?',
     mySelections: 'የእኔ ምርጫዎች',
@@ -110,6 +111,7 @@ export const am = {
   // Admin Portal
   admin: {
     portalTitle: 'የአድሚን ቁጥጥር ማዕከል',
+    workspaceLabel: 'የኦፕሬተር ወርክስፔስ',
     dashboard: 'ዳሽቦርድ',
     draws: 'ዕጣዎች',
     numbersBoard: 'የቁጥሮች ሰሌዳ',
@@ -137,6 +139,66 @@ export const am = {
     tableActions: 'እርምጃዎች',
     auditTitle: 'የሲስተም ኦዲት ታሪክ',
     auditSub: 'የአድሚን ክፍያ ማረጋገጫዎች፣ ውድቅ ማድረጎች እና የዕጣ ሂደቶች ኦዲት መዝገብ።',
+  },
+
+  // Super Admin SaaS Management
+  superAdmin: {
+    portalTitle: 'የሱፐር አድሚን SaaS ቁጥጥር ማዕከል',
+    overview: 'አጠቃላይ እይታ',
+    operators: 'SaaS ኦፕሬተሮች',
+    tenants: 'የተከራዩ ወርክስፔሶች',
+    createOperator: 'አዲስ የSaaS ኦፕሬተር መለያ ክፈት',
+    operatorName: 'የኦፕሬተር ድርጅት ስም',
+    slug: 'የወርክስፔስ Slug (መለያ)',
+    adminEmail: 'የአድሚን ኢሜይል',
+    activate: 'አንቀሳቅስ',
+    suspend: 'እገድ',
+    statusActive: 'ንቁ',
+    statusSuspended: 'የታገደ',
+    metricTotalOperators: 'ጠቅላላ SaaS ኦፕሬተሮች',
+    metricActiveOperators: 'ንቁ ኦፕሬተሮች',
+    metricTotalVolume: 'በፕላትፎርሙ የተሰበሰበ ጠቅላላ',
+    platformLogs: 'የፕላትፎርም ኦዲት መዝገቦች',
+  },
+
+  // Operator Discovery Directory
+  operators: {
+    directoryTitle: 'የዕጣ አዘጋጆች ማህበረሰብ',
+    directorySubtitle: 'የተረጋገጡ የዕጣ አዘጋጆችን እና የቴሌግራም ማህበረሰቦችን ያግኙ',
+    featuredTitle: 'ተመራጭ አዘጋጆች',
+    verifiedBadge: 'የተረጋገጠ አዘጋጅ',
+    joinTelegram: 'ወደ ቴሌግራም ይቀላቀሉ',
+    viewProfile: 'ፕሮፋይል ተመልከት',
+    completedRounds: 'የተጠናቀቁ ዙሮች',
+    activeRounds: 'ንቁ ዙሮች',
+    participants: 'ተሳታፊዎች',
+    membersCount: 'የቴሌግራም አባላት',
+    performanceScore: 'ከፍተኛ አፈጻጸም',
+    highRounder: 'ብዙ ዙሮች ያጠናቀቀ',
+    activityLevel: 'የማህበረሰብ እንቅስቃሴ',
+    searchPlaceholder: 'የዕጣ አዘጋጆችን በስም ወይም በቦታ ፈልግ...',
+    filterAll: 'ሁሉም አዘጋጆች',
+    filterVerified: 'የተረጋገጡ ብቻ',
+    filterFeatured: 'ተመራጮች',
+    performanceNotice: 'ማሳሰቢያ፡ አፈፃፀም እና የማህበረሰብ ውጤቶች በኦፕሬሽናል እና እንቅስቃሴ መረጃዎች ላይ የተመሰረቱ እንጂ የማሸነፍ እድልን አያመለክቱም።',
+    noOperatorsFound: 'ምንም አዘጋጅ አልተገኘም',
+    profileTitle: 'የኦፕሬተር ፕሮፋይል',
+    aboutOperator: 'ስለ አዘጋጁ',
+    communityStats: 'የማህበረሰብ ስታቲስቲክስ',
+  },
+
+  // Provably Fair Cryptographic Audit
+  provablyFair: {
+    title: 'የ SHA-256 ሚስጥራዊ የዕጣ ማረጋገጫ (Provably Fair)',
+    subtitle: 'የዕጣው አሸናፊ ቁጥር በሰርቨር ሚስጥራዊ ኮድ እና በSHA-256 hash ዘዴ በግልጽ እና በታማኝነት መወጣቱን ያረጋግጡ።',
+    serverSeedHash: 'የሰርቨሩ Hash Commitment (SHA-256)',
+    revealedSeed: 'የተገለጠው ሰርቨር Seed',
+    winningNumber: 'የወጣው አሸናፊ ቁጥር',
+    statusVerified: '✓ SHA-256 ማረጋገጫ ተሳክቷል! ውጤቱ 100% ትክክለኛ ነው።',
+    statusMismatch: '⚠️ የHash ማረጋገጫ አልተገናኘም።',
+    hiddenUntilExecution: 'ዕጣው ከተካሄደ በኋላ የሚገለጥ',
+    verifyBtn: 'የSHA-256 ውጤት አረጋግጥ',
+    executeDrawBtn: 'የSHA-256 ዕጣ በይፋ አከናውን',
   },
 
   // Results & History

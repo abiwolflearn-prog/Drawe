@@ -1,33 +1,55 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
+import { useSocket } from '../../context/SocketContext.js';
 import { useI18n } from '../../i18n/index.js';
 import { Button } from '../ui/Button.js';
 import { LanguageSelector } from '../ui/LanguageSelector.js';
-import { Shield, User, LogOut, Ticket } from 'lucide-react';
+import { Shield, User, LogOut, Ticket, Radio, Users } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { isConnected, activePlayersCount } = useSocket();
   const { t } = useI18n();
   const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#090B0E]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Zone 1: Brand Wordmark */}
-        <Link to="/" className="flex items-center gap-2.5 text-lg font-black tracking-tight text-white group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-mono text-sm font-bold text-white shadow-md shadow-blue-950/50 group-hover:scale-105 transition-transform">
-            01-80
+        {/* Zone 1: Brand Wordmark & Live Sync Badge */}
+        <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-2.5 text-lg font-black tracking-tight text-white group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 text-xs font-black text-white shadow-md shadow-rose-950/50 group-hover:scale-105 transition-transform">
+              አደይ
+            </div>
+            <span className="bg-gradient-to-r from-amber-200 via-white to-slate-200 bg-clip-text text-transparent font-black">
+              {t('brand.name')}
+            </span>
+          </Link>
+
+          {/* Live WebSocket Presence Indicator */}
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 bg-[#121722] border border-white/10 rounded-full text-[11px] font-mono">
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+            <span className="text-slate-300 flex items-center gap-1">
+              <Radio className="w-3 h-3 text-blue-400" />
+              {isConnected ? 'LIVE SYNC' : 'CONNECTING'}
+            </span>
+            <span className="text-slate-500">•</span>
+            <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {activePlayersCount} active
+            </span>
           </div>
-          <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-            {t('brand.name')}
-          </span>
-        </Link>
+        </div>
 
         {/* Zone 2: Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300 uppercase tracking-wider">
           <Link to="/" className="hover:text-blue-400 transition-colors">
             {t('nav.activeDraw')}
+          </Link>
+          <Link to="/operators" className="hover:text-blue-400 transition-colors flex items-center gap-1">
+            <Shield className="w-3.5 h-3.5 text-emerald-400" />
+            {t('nav.operators')}
           </Link>
           <Link to="/results" className="hover:text-blue-400 transition-colors">
             {t('nav.results')}

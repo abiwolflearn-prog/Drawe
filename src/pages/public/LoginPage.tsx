@@ -6,10 +6,12 @@ import { Card } from '../../components/ui/Card.js';
 import { Input } from '../../components/ui/Input.js';
 import { Button } from '../../components/ui/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
+import { useI18n } from '../../i18n/index.js';
 import { LogIn, AlertCircle } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
@@ -66,21 +68,31 @@ export const LoginPage: React.FC = () => {
 
           {/* Quick Demo Credentials */}
           <div className="p-3 bg-[#181D2C] border border-blue-500/20 rounded-xl space-y-2">
-            <p className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Demo Account Shortcuts</p>
+            <p className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">{t('auth.demoShortcut')}</p>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={fillDemoPlayer}
                 className="flex-1 py-1.5 px-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 rounded-lg text-xs font-semibold border border-blue-500/30 transition-colors"
               >
-                Player Demo
+                Player
               </button>
               <button
                 type="button"
                 onClick={fillDemoAdmin}
                 className="flex-1 py-1.5 px-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 rounded-lg text-xs font-semibold border border-amber-500/30 transition-colors"
               >
-                Admin Demo
+                Operator Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('superadmin@draw.com');
+                  setPassword('password123');
+                }}
+                className="flex-1 py-1.5 px-2 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 rounded-lg text-xs font-semibold border border-rose-500/30 transition-colors"
+              >
+                Super Admin
               </button>
             </div>
           </div>

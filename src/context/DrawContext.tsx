@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { IDraw, IDrawNumber, NumberState, PaymentMethod } from '../types/index.js';
+import { IDraw, IDrawNumber, PaymentMethod } from '../types/index.js';
 import { useAuth } from './AuthContext.js';
+import { useSocket } from './SocketContext.js';
 
 interface DrawContextType {
   activeDraw: IDraw | null;
@@ -18,7 +19,8 @@ interface DrawContextType {
 const DrawContext = createContext<DrawContextType | undefined>(undefined);
 
 export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const { socket, joinDrawRoom } = useSocket();
   const [activeDraw, setActiveDraw] = useState<IDraw | null>(null);
   const [numbersMap, setNumbersMap] = useState<Map<number, IDrawNumber>>(new Map());
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
@@ -59,21 +61,67 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchDrawData();
   }, []);
 
+  // Join Socket.IO room when activeDraw loads
+  useEffect(() => {
+    const drawId = activeDraw?._id || activeDraw?.id;
+    if (drawId) {
+      joinDrawRoom(drawId, user?.id);
+    }
+  }, [activeDraw?._id, activeDraw?.id, user?.id]);
+
+  // Listen to Socket.IO real-time board updates
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNumberUpdated = (data: { number: number; status: any; selectedBy?: any }) => {
+      setNumbersMap((prevMap) => {
+        const newMap = new Map(prevMap);
+        const existing = newMap.get(data.number);
+        if (existing) {
+          newMap.set(data.number, {
+            ...existing,
+            status: data.status,
+            selectedBy: data.selectedBy,
+          });
+        }
+        return newMap;
+      });
+    };
+
+    const handleDrawStateChanged = (data: { drawId: string; status: any; winnerNumber?: number }) => {
+      setActiveDraw((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          status: data.status,
+          winnerNumber: data.winnerNumber ?? prev.winnerNumber,
+        };
+      });
+    };
+
+    socket.on('number:updated', handleNumberUpdated);
+    socket.on('draw:state_changed', handleDrawStateChanged);
+
+    return () => {
+      socket.off('number:updated', handleNumberUpdated);
+      socket.off('draw:state_changed', handleDrawStateChanged);
+    };
+  }, [socket]);
+
   const toggleNumberSelection = (num: number) => {
     const item = numbersMap.get(num);
-    // Only AVAILABLE numbers or currently selected numbers can be toggled
     if (item && item.status !== 'AVAILABLE' && !selectedNumbers.includes(num)) {
-      return; // Taken or Pending
+      return;
     }
 
     if (selectedNumbers.includes(num)) {
-      setSelectedNumbers(prev => prev.filter(n => n !== num));
+      setSelectedNumbers((prev) => prev.filter((n) => n !== num));
     } else {
       if (selectedNumbers.length >= (activeDraw?.maxSelectionsPerPlayer || 10)) {
         alert(`Maximum ${activeDraw?.maxSelectionsPerPlayer || 10} selections allowed per round.`);
         return;
       }
-      setSelectedNumbers(prev => [...prev, num].sort((a, b) => a - b));
+      setSelectedNumbers((prev) => [...prev, num].sort((a, b) => a - b));
     }
   };
 
@@ -110,7 +158,6 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, error: data.error || 'Failed to submit payment reference' };
       }
 
-      // Clear selection and refresh board
       setSelectedNumbers([]);
       await fetchDrawData();
       return { success: true };

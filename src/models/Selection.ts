@@ -5,6 +5,7 @@ export interface ISelectionDocument extends Omit<ISelection, '_id'>, Document {}
 
 const SelectionSchema: Schema = new Schema(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
     drawId: { type: Schema.Types.ObjectId, ref: 'Draw', required: true },
     playerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     numbers: [{ type: Number, required: true }],

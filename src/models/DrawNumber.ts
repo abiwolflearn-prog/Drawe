@@ -5,6 +5,7 @@ export interface IDrawNumberDocument extends Omit<IDrawNumber, '_id'>, Document 
 
 const DrawNumberSchema: Schema = new Schema(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
     drawId: { type: Schema.Types.ObjectId, ref: 'Draw', required: true },
     number: { type: Number, required: true, min: 1, max: 80 },
     status: { 
@@ -22,7 +23,7 @@ const DrawNumberSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-// Unique constraint on drawId + number to prevent double assignment
-DrawNumberSchema.index({ drawId: 1, number: 1 }, { unique: true });
+// Unique constraint on tenantId + drawId + number to prevent double assignment
+DrawNumberSchema.index({ tenantId: 1, drawId: 1, number: 1 }, { unique: true });
 
 export const DrawNumberModel = mongoose.models.DrawNumber || mongoose.model<IDrawNumberDocument>('DrawNumber', DrawNumberSchema);

@@ -1,39 +1,19 @@
 # API SPECIFICATION
 
-## Authentication
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/logout
-GET  /api/auth/me
+## Admin Draw Endpoints
+- `POST /api/admin/draws` — Create new draw (Admin only).
+  - Body: `{ name, description, capacity, pricePerNumber, currency, prizes: [{ position, label, amount }] }`
+  - Validation: `1 <= capacity <= 1000`, `pricePerNumber > 0`.
+- `POST /api/admin/draws/:id/open` — Open draw for selections.
+- `POST /api/admin/draws/:id/close` — Lock draw for selections (makes draw configuration read-only).
+- `POST /api/admin/draws/:id/execute` — Execute cryptographic draw selection for all configured winner positions.
 
-## Draws
-GET  /api/draws
-GET  /api/draws/:id
-POST /api/admin/draws
-PATCH /api/admin/draws/:id
-POST /api/admin/draws/:id/open
-POST /api/admin/draws/:id/close
-POST /api/admin/draws/:id/draw
+## Payment Endpoints
+- `POST /api/payments` — Submit payment reference.
+  - Recalculates total server-side: `amount = numbers.length * draw.pricePerNumber`.
+  - Captures `unitPrice` snapshot.
 
-## Numbers
-GET  /api/draws/:id/numbers
-POST /api/draws/:id/selections
-DELETE /api/draws/:id/selections/:selectionId
-
-## Payments
-POST /api/payments
-GET  /api/payments/my
-GET  /api/admin/payments?status=pending
-POST /api/admin/payments/:id/approve
-POST /api/admin/payments/:id/reject
-
-## Results
-GET /api/results
-GET /api/draws/:id/result
-
-## Admin
-GET /api/admin/dashboard
-GET /api/admin/audit-logs
-GET /api/admin/players
-
-All protected endpoints require authorization. Admin operations must be enforced server-side.
+## Public & Verification Endpoints
+- `GET /api/draws` — Returns active draw.
+- `GET /api/draws/:id/numbers` — Returns numbers map for capacity `1..capacity`.
+- `GET /api/draws/:id/verify` — Public SHA-256 seed verification.

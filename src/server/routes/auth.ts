@@ -9,9 +9,20 @@ const router = Router();
 // In-memory fallback user store when MongoDB is not connected
 const memoryUsers: any[] = [
   {
+    _id: 'usr_super_01',
+    id: 'usr_super_01',
+    name: 'Super Platform Admin',
+    email: 'superadmin@draw.com',
+    passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
+    role: 'SUPER_ADMIN',
+    status: 'ACTIVE',
+    createdAt: new Date().toISOString(),
+  },
+  {
     _id: 'usr_admin_01',
     id: 'usr_admin_01',
-    name: 'Platform Operator',
+    tenantId: 'tenant_addis',
+    name: 'Addis Operator Admin',
     email: 'admin@draw.com',
     passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
     role: 'ADMIN',
@@ -21,6 +32,7 @@ const memoryUsers: any[] = [
   {
     _id: 'usr_player_01',
     id: 'usr_player_01',
+    tenantId: 'tenant_addis',
     name: 'Sample Player',
     email: 'player@draw.com',
     passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
@@ -53,6 +65,7 @@ router.post('/register', async (req: Request, res: Response) => {
       const newUser = {
         _id: 'usr_' + Date.now(),
         id: 'usr_' + Date.now(),
+        tenantId: 'tenant_addis', // Assigned to default operator tenant
         name,
         email: lowerEmail,
         phone: phone || '',
@@ -63,10 +76,16 @@ router.post('/register', async (req: Request, res: Response) => {
       };
 
       memoryUsers.push(newUser);
-      const token = generateToken({ id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role });
+      const token = generateToken({
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+        tenantId: newUser.tenantId,
+      });
 
       return res.status(201).json({
-        user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone, role: newUser.role },
+        user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone, role: newUser.role, tenantId: newUser.tenantId },
         token,
       });
     }
@@ -86,6 +105,7 @@ router.post('/register', async (req: Request, res: Response) => {
       passwordHash,
       role: 'PLAYER',
       status: 'ACTIVE',
+      tenantId: 'tenant_addis',
     });
 
     const token = generateToken({
@@ -93,6 +113,7 @@ router.post('/register', async (req: Request, res: Response) => {
       email: newUser.email,
       name: newUser.name,
       role: newUser.role,
+      tenantId: newUser.tenantId?.toString(),
     });
 
     return res.status(201).json({
@@ -102,6 +123,7 @@ router.post('/register', async (req: Request, res: Response) => {
         email: newUser.email,
         phone: newUser.phone,
         role: newUser.role,
+        tenantId: newUser.tenantId?.toString(),
       },
       token,
     });
@@ -134,10 +156,16 @@ router.post('/login', async (req: Request, res: Response) => {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
 
-      const token = generateToken({ id: user.id || user._id, email: user.email, name: user.name, role: user.role });
+      const token = generateToken({
+        id: user.id || user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        tenantId: user.tenantId,
+      });
 
       return res.json({
-        user: { id: user.id || user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role },
+        user: { id: user.id || user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role, tenantId: user.tenantId },
         token,
       });
     }
@@ -157,6 +185,7 @@ router.post('/login', async (req: Request, res: Response) => {
       email: user.email,
       name: user.name,
       role: user.role,
+      tenantId: user.tenantId?.toString(),
     });
 
     return res.json({
@@ -166,6 +195,7 @@ router.post('/login', async (req: Request, res: Response) => {
         email: user.email,
         phone: user.phone || '',
         role: user.role,
+        tenantId: user.tenantId?.toString(),
       },
       token,
     });

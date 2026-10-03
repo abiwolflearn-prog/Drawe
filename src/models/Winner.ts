@@ -5,6 +5,7 @@ export interface IWinnerDocument extends Omit<IWinner, '_id'>, Document {}
 
 const WinnerSchema: Schema = new Schema(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
     drawId: { type: Schema.Types.ObjectId, ref: 'Draw', required: true },
     drawTitle: { type: String, required: true },
     drawNumber: { type: Number, required: true },

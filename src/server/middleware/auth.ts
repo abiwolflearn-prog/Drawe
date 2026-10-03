@@ -9,12 +9,13 @@ export interface AuthRequest extends Request {
     email: string;
     name: string;
     role: 'PLAYER' | 'ADMIN' | 'SUPER_ADMIN';
+    tenantId?: string;
   };
 }
 
-export function generateToken(user: { id: string; email: string; name: string; role: string }): string {
+export function generateToken(user: { id: string; email: string; name: string; role: string; tenantId?: string }): string {
   return jwt.sign(
-    { id: user.id, email: user.email, name: user.name, role: user.role },
+    { id: user.id, email: user.email, name: user.name, role: user.role, tenantId: user.tenantId },
     JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -37,19 +38,19 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
   }
 }
 
-export function requireAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+export function requireSuperAdmin(req: AuthRequest, res: Response, next: NextFunction) {
   requireAuth(req, res, () => {
-    if (req.user?.role !== 'ADMIN' && req.user?.role !== 'SUPER_ADMIN') {
-      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    if (req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Forbidden: Super Admin access required' });
     }
     next();
   });
 }
 
-export function requireSuperAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+export function requireAdmin(req: AuthRequest, res: Response, next: NextFunction) {
   requireAuth(req, res, () => {
-    if (req.user?.role !== 'SUPER_ADMIN') {
-      return res.status(403).json({ error: 'Forbidden: Super Admin access required' });
+    if (req.user?.role !== 'ADMIN' && req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
     }
     next();
   });

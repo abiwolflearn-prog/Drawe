@@ -13,6 +13,7 @@ export const OPERATOR_ACCOUNTS: Record<PaymentMethod, OperatorAccountInfo> = {
   TELEBIRR: {
     method: 'TELEBIRR',
     providerName: 'Telebirr',
+    bankName: 'Telebirr',
     accountName: 'የዕጣ ኦፕሬተር አካውንት',
     accountNumber: '0911223344',
     instructions: 'በቴሌብር ስልክ ቁጥር ቀጥታ ክፍያ ይፈጽሙ። የክፍያ ማረጋገጫ ቁጥሩን (Ref ID) አጭር የጽሁፍ መልዕክት ላይ ኮፒ በማድረግ ከታች ያስገቡ።',
@@ -20,6 +21,7 @@ export const OPERATOR_ACCOUNTS: Record<PaymentMethod, OperatorAccountInfo> = {
   CBE_BANK: {
     method: 'CBE_BANK',
     providerName: 'የኢትዮጵያ ንግድ ባንክ (CBE)',
+    bankName: 'የኢትዮጵያ ንግድ ባንክ',
     accountName: 'የዕጣ ፕላትፎርም አካውንት',
     accountNumber: '1000123456789',
     instructions: 'በንግድ ባንክ አካውንት ወይም CBE Birr ክፍያ ይፈጽሙ። የግብይት ማጣቀሻ ቁጥሩን ከደረሰኙ ላይ ያስገቡ።',
@@ -27,20 +29,31 @@ export const OPERATOR_ACCOUNTS: Record<PaymentMethod, OperatorAccountInfo> = {
   CBE_BIRR: {
     method: 'CBE_BIRR',
     providerName: 'CBE Birr',
+    bankName: 'CBE Birr',
     accountName: 'የዕጣ ኦፕሬተር አካውንት',
     accountNumber: '0911223344',
     instructions: 'በCBE Birr ቀጥታ ክፍያ ይፈጽሙ። የግብይት ማጣቀሻ ቁጥሩን ከደረሰኙ ላይ ያስገቡ።',
   },
-  BOA: {
-    method: 'BOA',
+  BANK_TRANSFER: {
+    method: 'BANK_TRANSFER',
     providerName: 'የአቢሲኒያ ባንክ (BOA)',
+    bankName: 'የአቢሲኒያ ባንክ',
     accountName: 'የዕጣ ፕላትፎርም አካውንት',
     accountNumber: '887766554433',
     instructions: 'በአቢሲኒያ ሞባይል ባንኪንግ ክፍያ ይፈጽሙ። የግብይት ማጣቀሻ ቁጥሩን ያስገቡ።',
   },
-  CASH_DIRECT: {
-    method: 'CASH_DIRECT',
-    providerName: 'ቀጥታ ወኪል',
+  CHAPA: {
+    method: 'CHAPA',
+    providerName: 'Chapa Direct',
+    bankName: 'Chapa Pay',
+    accountName: 'Chapa Operator',
+    accountNumber: 'CHAPA-0192',
+    instructions: 'በChapa የኦንላይን ክፍያ ይፈጽሙ።',
+  },
+  CASH: {
+    method: 'CASH',
+    providerName: 'ቀጥታ ወኪል (Cash)',
+    bankName: 'Cash Agent',
     accountName: 'ህጋዊ ወኪል',
     accountNumber: 'AGENT-ADDIS-01',
     instructions: 'ለተፈቀደለት የፕላትፎርም ወኪል በእጅ ክፍያ ይፈጽሙ። የተቀበሉትን ደረሰኝ ቁጥር ያስገቡ።',
@@ -69,7 +82,7 @@ export const OperatorAccountCard: React.FC<OperatorAccountCardProps> = ({
           {t('payment.selectMethod')}
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {(['TELEBIRR', 'CBE_BANK', 'BOA'] as PaymentMethod[]).map((m) => (
+          {(['TELEBIRR', 'CBE_BANK', 'BANK_TRANSFER'] as PaymentMethod[]).map((m) => (
             <button
               key={m}
               type="button"
@@ -80,7 +93,7 @@ export const OperatorAccountCard: React.FC<OperatorAccountCardProps> = ({
                   : 'bg-[#1A1F2E] text-slate-300 border-white/5 hover:border-white/20'
               }`}
             >
-              {OPERATOR_ACCOUNTS[m].providerName.split('(')[0]}
+              {(OPERATOR_ACCOUNTS[m]?.providerName || m).split('(')[0]}
             </button>
           ))}
         </div>

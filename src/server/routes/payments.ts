@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { requireAuth, AuthRequest } from '../middleware/auth.js';
-import { defaultNumbersMap } from './draws.js';
+import { defaultNumbersMap, defaultDraw } from '../store.js';
+import { broadcastNumberUpdate } from '../socket.js';
 
 const router = Router();
 
@@ -12,11 +13,13 @@ export const memoryPayments: any[] = [
     playerId: 'usr_player_01',
     playerName: 'Sample Player',
     playerPhone: '+251911002233',
+    tenantId: 'tenant_addis',
     drawId: 'draw_round_001',
-    drawTitle: 'Round #001 — Standard 01–80 Draw',
+    drawTitle: 'Round #001 — Addis Community Draw',
     selectionId: 'sel_1001',
     numbers: [19, 54],
-    amount: 100,
+    unitPrice: 50, // Price snapshot
+    amount: 100, // 2 * 50
     method: 'TELEBIRR',
     transactionReference: 'TXN-984720192',
     screenshotUrl: '',
@@ -39,13 +42,14 @@ router.post('/', requireAuth, (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Valid transaction reference number is required' });
     }
 
-    const pricePerNumber = 50;
-    const amount = numbers.length * pricePerNumber;
+    // Server-Side Authoritative Price Recalculation
+    const unitPrice = defaultDraw.pricePerNumber || 50;
+    const recalculatedTotal = numbers.length * unitPrice; // Never trust total sent from client!
 
     // Check if any requested number is already taken
     for (const num of numbers) {
       const existing = defaultNumbersMap.get(num);
-      if (existing && existing.status === 'CONFIRMED') {
+      if (existing && (existing.status === 'CONFIRMED' || existing.status === 'WINNER')) {
         return res.status(400).json({ error: `Number ${num} is already taken by another player` });
       }
     }
@@ -56,11 +60,13 @@ router.post('/', requireAuth, (req: AuthRequest, res: Response) => {
       playerId: req.user?.id || 'usr_player_01',
       playerName: req.user?.name || 'Player',
       playerPhone: '+251900000000',
-      drawId,
-      drawTitle: 'Round #001 — Standard 01–80 Draw',
+      tenantId: defaultDraw.tenantId || 'tenant_addis',
+      drawId: defaultDraw._id,
+      drawTitle: defaultDraw.title,
       selectionId: 'sel_' + Date.now(),
       numbers,
-      amount,
+      unitPrice, // Price snapshot at time of selection
+      amount: recalculatedTotal, // Server recalculated total
       method: method || 'TELEBIRR',
       transactionReference: transactionReference.trim(),
       screenshotUrl: screenshotUrl || '',
@@ -75,6 +81,7 @@ router.post('/', requireAuth, (req: AuthRequest, res: Response) => {
       if (cell) {
         cell.status = 'PAYMENT_PENDING';
         cell.selectedBy = { id: req.user?.id, name: req.user?.name };
+        broadcastNumberUpdate(defaultDraw._id, num, 'PAYMENT_PENDING', cell.selectedBy);
       }
     }
 

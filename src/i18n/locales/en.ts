@@ -4,8 +4,8 @@
 export const en = {
   // Brand & App
   brand: {
-    name: '01–80 Number Draw',
-    subtitle: 'Web & Telegram Number Draw Platform',
+    name: 'Adey Draw',
+    subtitle: 'Adey Draw Web & Telegram Platform',
     complianceNotice: 'Compliance Notice: Direct-to-operator payments are reviewed and verified manually by platform admins. Confirm applicable Ethiopian legal, licensing, tax, age, and consumer protection requirements before operating real-money draws.',
     rightsReserved: 'All rights reserved.',
   },
@@ -21,6 +21,7 @@ export const en = {
   nav: {
     home: 'Home',
     activeDraw: 'Active Draw',
+    operators: 'Operators',
     results: 'Results Archive',
     howItWorks: 'How It Works',
     mySelections: 'My Selections',
@@ -110,6 +111,7 @@ export const en = {
   // Admin Portal
   admin: {
     portalTitle: 'Admin Control Center',
+    workspaceLabel: 'Operator Workspace',
     dashboard: 'Dashboard',
     draws: 'Draws',
     numbersBoard: 'Numbers Board',
@@ -137,6 +139,66 @@ export const en = {
     tableActions: 'Actions',
     auditTitle: 'System Audit Trail',
     auditSub: 'Immutable log recording every sensitive admin operation (payment approvals, rejections, draw triggers, & parameter modifications).',
+  },
+
+  // Super Admin SaaS Management
+  superAdmin: {
+    portalTitle: 'Super Admin SaaS Control Center',
+    overview: 'Overview',
+    operators: 'SaaS Operators',
+    tenants: 'Tenants & Workspaces',
+    createOperator: 'Create New SaaS Operator',
+    operatorName: 'Operator Organization Name',
+    slug: 'Workspace Slug ID',
+    adminEmail: 'Admin Email',
+    activate: 'Activate',
+    suspend: 'Suspend',
+    statusActive: 'Active',
+    statusSuspended: 'Suspended',
+    metricTotalOperators: 'Total SaaS Operators',
+    metricActiveOperators: 'Active Operators',
+    metricTotalVolume: 'Total Platform Volume',
+    platformLogs: 'Platform Audit Logs',
+  },
+
+  // Operator Discovery Directory
+  operators: {
+    directoryTitle: 'Operator Discovery Directory',
+    directorySubtitle: 'Discover verified SaaS draw operators and join their official Telegram communities',
+    featuredTitle: 'Featured Communities',
+    verifiedBadge: 'Verified Operator',
+    joinTelegram: 'Join Telegram',
+    viewProfile: 'View Profile',
+    completedRounds: 'Completed Rounds',
+    activeRounds: 'Active Rounds',
+    participants: 'Participants',
+    membersCount: 'Telegram Members',
+    performanceScore: 'High Performance',
+    highRounder: 'High Rounder',
+    activityLevel: 'Community Activity',
+    searchPlaceholder: 'Search operators by name or location...',
+    filterAll: 'All Operators',
+    filterVerified: 'Verified Only',
+    filterFeatured: 'Featured',
+    performanceNotice: 'Notice: Performance scores and activity metrics reflect operational history and engagement, not winning odds or financial guarantees.',
+    noOperatorsFound: 'No operators found',
+    profileTitle: 'Operator Profile',
+    aboutOperator: 'About Operator',
+    communityStats: 'Community Statistics',
+  },
+
+  // Provably Fair Cryptographic Audit
+  provablyFair: {
+    title: 'Provably Fair SHA-256 Audit',
+    subtitle: 'Verify that the winning number was generated deterministically using server cryptographic seed commitments.',
+    serverSeedHash: 'Server Hash Commitment (SHA-256)',
+    revealedSeed: 'Revealed Server Seed',
+    winningNumber: 'Drawn Winning Number',
+    statusVerified: '✓ SHA-256 Verification Passed! Draw result is 100% cryptographically fair.',
+    statusMismatch: '⚠️ Hash commitment verification failed.',
+    hiddenUntilExecution: 'Revealed after draw execution',
+    verifyBtn: 'Verify SHA-256 Proof',
+    executeDrawBtn: 'Execute Cryptographic Draw',
   },
 
   // Results & History

@@ -5,6 +5,7 @@ export interface IPaymentDocument extends Omit<IPayment, '_id'>, Document {}
 
 const PaymentSchema: Schema = new Schema(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
     playerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     playerName: { type: String },
     playerPhone: { type: String },
