@@ -237,4 +237,21 @@ export const en = {
     loginRequired: 'Please log in or create an account to submit payment.',
     networkError: 'A network error occurred. Please try again.',
   },
+
+  // How It Works Page
+  howItWorksPage: {
+    tag: 'Platform Protocol Guide',
+    title: 'How Adey Draw Works',
+    subtitle: 'A transparent, direct-payment platform where players choose available numbers and verify transactions directly with platform operators.',
+    step1Title: '1. Select Available Numbers',
+    step1Desc: 'Explore the live interactive board. Select any unreserved numbers. Your total amount is calculated live.',
+    step2Title: '2. Pay Operator Directly',
+    step2Desc: 'Transfer funds directly to the operator account (Telebirr or CBE Bank). There are NO internal wallet deposits or casino balances.',
+    step3Title: '3. Submit Payment Reference',
+    step3Desc: 'Enter your transaction reference ID from your Telebirr or Bank SMS receipt. Your numbers are held in Payment Pending status.',
+    step4Title: '4. Admin Approval & Draw Execution',
+    step4Desc: 'Platform admins review the reference and confirm your numbers. When the round closes, an auditable random draw determines the winning number.',
+    legalTitle: 'Ethiopian Regulatory & Legal Compliance',
+    legalNotice: 'Direct-to-operator payments are reviewed and verified manually by platform admins. Confirm applicable Ethiopian legal, licensing, tax, age, and consumer protection requirements before operating real-money draws.',
+  },
 };
