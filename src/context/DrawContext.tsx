@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { IDraw, IDrawNumber, PaymentMethod } from '../types/index.js';
 import { useAuth } from './AuthContext.js';
 import { useSocket } from './SocketContext.js';
@@ -10,10 +10,18 @@ interface DrawContextType {
   pricePerNumber: number;
   totalAmount: number;
   isLoading: boolean;
+  error: string | null;
+  selectionError: string | null;
   toggleNumberSelection: (num: number) => void;
   clearSelections: () => void;
-  submitPaymentReference: (method: PaymentMethod, ref: string, screenshotUrl?: string) => Promise<{ success: boolean; error?: string }>;
+  clearErrors: () => void;
+  submitPaymentReference: (
+    method: PaymentMethod,
+    ref: string,
+    screenshotUrl?: string
+  ) => Promise<{ success: boolean; error?: string; payment?: any }>;
   refreshNumbers: () => Promise<void>;
+  setCapacityFilter: (capacity: number) => void;
 }
 
 const DrawContext = createContext<DrawContextType | undefined>(undefined);
@@ -25,41 +33,60 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [numbersMap, setNumbersMap] = useState<Map<number, IDrawNumber>>(new Map());
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectionError, setSelectionError] = useState<string | null>(null);
 
   const pricePerNumber = activeDraw?.pricePerNumber || 50;
   const totalAmount = selectedNumbers.length * pricePerNumber;
 
-  const fetchDrawData = async () => {
+  const fetchDrawData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const resDraw = await fetch('/api/draws');
-      if (resDraw.ok) {
-        const dataDraw = await resDraw.json();
-        if (dataDraw.draws && dataDraw.draws.length > 0) {
-          const draw = dataDraw.draws[0];
-          setActiveDraw(draw);
+      setError(null);
 
-          const resNums = await fetch(`/api/draws/${draw.id || draw._id}/numbers`);
-          if (resNums.ok) {
-            const dataNums = await resNums.json();
-            const newMap = new Map<number, IDrawNumber>();
-            dataNums.numbers.forEach((item: IDrawNumber) => {
-              newMap.set(item.number, item);
-            });
-            setNumbersMap(newMap);
-          }
-        }
+      // Extract tenant and draw query parameters from URL (e.g. from Telegram Mini App link)
+      const urlParams = new URLSearchParams(window.location.search);
+      const tenantParam = urlParams.get('tenant') || '';
+      const drawParam = urlParams.get('draw') || '';
+
+      const queryParts: string[] = [];
+      if (tenantParam) queryParts.push(`tenant=${encodeURIComponent(tenantParam)}`);
+      if (drawParam) queryParts.push(`draw=${encodeURIComponent(drawParam)}`);
+      const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+
+      const resDraw = await fetch(`/api/draws${queryString}`);
+      if (!resDraw.ok) {
+        throw new Error('Failed to load draw data from server');
       }
-    } catch (err) {
+
+      const dataDraw = await resDraw.json();
+      if (dataDraw.draws && dataDraw.draws.length > 0) {
+        const draw = dataDraw.draws[0];
+        setActiveDraw(draw);
+
+        const resNums = await fetch(`/api/draws/${draw.id || draw._id}/numbers`);
+        if (resNums.ok) {
+          const dataNums = await resNums.json();
+          const newMap = new Map<number, IDrawNumber>();
+          dataNums.numbers.forEach((item: IDrawNumber) => {
+            newMap.set(item.number, item);
+          });
+          setNumbersMap(newMap);
+        }
+      } else {
+        setError('No active draw currently available');
+      }
+    } catch (err: any) {
       console.error('Failed to load draw data:', err);
+      setError(err.message || 'Failed to connect to draw service');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchDrawData();
-  }, []);
+  }, [fetchDrawData]);
 
   // Join Socket.IO room when activeDraw loads
   useEffect(() => {
@@ -67,7 +94,7 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (drawId) {
       joinDrawRoom(drawId, user?.id);
     }
-  }, [activeDraw?._id, activeDraw?.id, user?.id]);
+  }, [activeDraw?._id, activeDraw?.id, user?.id, joinDrawRoom]);
 
   // Listen to Socket.IO real-time board updates
   useEffect(() => {
@@ -86,6 +113,17 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         return newMap;
       });
+
+      // If a number that current player selected was taken by someone else, notify and unselect
+      if (data.status !== 'AVAILABLE') {
+        setSelectedNumbers((prev) => {
+          if (prev.includes(data.number) && data.selectedBy?.id !== user?.id) {
+            setSelectionError(`ይቅርታ፣ ቁጥር ${data.number} በሌላ ተጠቃሚ ተይዟል።`);
+            return prev.filter((n) => n !== data.number);
+          }
+          return prev;
+        });
+      }
     };
 
     const handleDrawStateChanged = (data: { drawId: string; status: any; winnerNumber?: number }) => {
@@ -106,19 +144,24 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
       socket.off('number:updated', handleNumberUpdated);
       socket.off('draw:state_changed', handleDrawStateChanged);
     };
-  }, [socket]);
+  }, [socket, user?.id]);
 
   const toggleNumberSelection = (num: number) => {
+    setSelectionError(null);
     const item = numbersMap.get(num);
+
+    // If number is already reserved, pending, confirmed, or disabled
     if (item && item.status !== 'AVAILABLE' && !selectedNumbers.includes(num)) {
+      setSelectionError(`ይቅርታ፣ ቁጥር ${num} በሌላ ተጠቃሚ ተይዟል (${item.status})።`);
       return;
     }
 
     if (selectedNumbers.includes(num)) {
       setSelectedNumbers((prev) => prev.filter((n) => n !== num));
     } else {
-      if (selectedNumbers.length >= (activeDraw?.maxSelectionsPerPlayer || 10)) {
-        alert(`Maximum ${activeDraw?.maxSelectionsPerPlayer || 10} selections allowed per round.`);
+      const maxLimit = activeDraw?.maxSelectionsPerPlayer || 20;
+      if (selectedNumbers.length >= maxLimit) {
+        setSelectionError(`በአንድ ዙር ቢበዛ ${maxLimit} ቁጥሮች ብቻ መምረጥ ይቻላል።`);
         return;
       }
       setSelectedNumbers((prev) => [...prev, num].sort((a, b) => a - b));
@@ -127,14 +170,24 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearSelections = () => {
     setSelectedNumbers([]);
+    setSelectionError(null);
   };
 
-  const submitPaymentReference = async (method: PaymentMethod, ref: string, screenshotUrl?: string) => {
+  const clearErrors = () => {
+    setError(null);
+    setSelectionError(null);
+  };
+
+  const submitPaymentReference = async (
+    method: PaymentMethod,
+    ref: string,
+    screenshotUrl?: string
+  ) => {
     if (selectedNumbers.length === 0) {
-      return { success: false, error: 'No numbers selected' };
+      return { success: false, error: 'እባክዎ ቢያንስ አንድ ቁጥር ይምረጡ።' };
     }
     if (!token) {
-      return { success: false, error: 'Please log in or create an account to submit payment' };
+      return { success: false, error: 'የክፍያ መረጃ ለመላክ እባክዎ በመጀመሪያ ይግቡ።' };
     }
 
     try {
@@ -155,14 +208,20 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const data = await res.json();
       if (!res.ok) {
-        return { success: false, error: data.error || 'Failed to submit payment reference' };
+        const errorText = data.error || 'ክፍያውን ማረጋገጥ አልተቻለም።';
+        setSelectionError(errorText);
+        // Refresh board so player sees the updated unavailable cells
+        await fetchDrawData();
+        return { success: false, error: errorText };
       }
 
       setSelectedNumbers([]);
       await fetchDrawData();
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: 'Network error submitting payment reference' };
+      return { success: true, payment: data.payment };
+    } catch (err: any) {
+      const netError = 'የኔትወርክ ስህተት ተከስቷል። እባክዎ እንደገና ይሞክሩ።';
+      setSelectionError(netError);
+      return { success: false, error: netError };
     }
   };
 
@@ -175,10 +234,14 @@ export const DrawProvider: React.FC<{ children: React.ReactNode }> = ({ children
         pricePerNumber,
         totalAmount,
         isLoading,
+        error,
+        selectionError,
         toggleNumberSelection,
         clearSelections,
+        clearErrors,
         submitPaymentReference,
         refreshNumbers: fetchDrawData,
+        setCapacityFilter: () => {},
       }}
     >
       {children}

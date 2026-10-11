@@ -20,33 +20,70 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
+    const initAuth = async () => {
+      // 1. If existing auth_token exists, verify it
+      if (token) {
+        try {
+          const res = await fetch('/api/auth/me', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-      try {
-        const res = await fetch('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          localStorage.removeItem('auth_token');
-          setToken(null);
-          setUser(null);
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+            setIsLoading(false);
+            return;
+          } else {
+            localStorage.removeItem('auth_token');
+            setToken(null);
+            setUser(null);
+          }
+        } catch (err) {
+          console.error('Failed to verify token:', err);
         }
-      } catch (err) {
-        console.error('Failed to verify token:', err);
-      } finally {
-        setIsLoading(false);
       }
+
+      // 2. Check if running inside Telegram Mini App
+      if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+        const tg = window.Telegram.WebApp;
+        const tgUser = tg.initDataUnsafe?.user;
+        const initData = tg.initData;
+
+        if (tgUser || initData) {
+          try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tenantParam = urlParams.get('tenant') || undefined;
+
+            const res = await fetch('/api/telegram/auth', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                initData,
+                user: tgUser,
+                preferredTenantId: tenantParam,
+              }),
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              if (data.token && data.user) {
+                localStorage.setItem('auth_token', data.token);
+                setToken(data.token);
+                setUser(data.user);
+                setIsLoading(false);
+                return;
+              }
+            }
+          } catch (err) {
+            console.error('Failed to auto-authenticate Telegram Mini App user:', err);
+          }
+        }
+      }
+
+      setIsLoading(false);
     };
 
-    fetchUser();
+    initAuth();
   }, [token]);
 
   const login = async (email: string, pass: string) => {

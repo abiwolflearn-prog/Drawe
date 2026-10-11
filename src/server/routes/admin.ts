@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { requireAdmin, AuthRequest } from '../middleware/auth.js';
-import { memoryPayments } from './payments.js';
+import { paymentService, memoryPayments } from '../services/paymentService.js';
 import { generateSeedCommitment, selectMultipleWinners } from '../utils/cryptoDraw.js';
 import { defaultDraw, defaultNumbersMap, buildNumbersMapForCapacity, memoryWinners, memoryAuditLogs } from '../store.js';
 import { broadcastNumberUpdate, broadcastDrawStateChange } from '../socket.js';
@@ -285,84 +285,26 @@ router.get('/payments', requireAdmin, (req: AuthRequest, res: Response) => {
 });
 
 // POST /api/admin/payments/:id/approve
-router.post('/payments/:id/approve', requireAdmin, (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
-  const payment = memoryPayments.find(p => p._id === id || p.id === id);
-
-  if (!payment) {
-    return res.status(404).json({ error: 'Payment record not found' });
+router.post('/payments/:id/approve', requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const payment = await paymentService.approvePayment(id, req.user);
+    return res.json({ message: 'Payment approved successfully. Numbers confirmed.', payment });
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message || 'Failed to approve payment' });
   }
-
-  payment.status = 'APPROVED';
-  payment.verifiedBy = req.user?.id;
-  payment.verifiedAt = new Date().toISOString();
-
-  for (const num of payment.numbers) {
-    const cell = defaultNumbersMap.get(num);
-    if (cell) {
-      cell.status = 'CONFIRMED';
-      cell.confirmedAt = new Date().toISOString();
-      broadcastNumberUpdate(defaultDraw._id, num, 'CONFIRMED', cell.selectedBy);
-    }
-  }
-
-  memoryAuditLogs.unshift({
-    _id: 'audit_' + Date.now(),
-    actorId: req.user?.id || 'admin',
-    actorName: req.user?.name || 'Admin',
-    action: 'APPROVE_PAYMENT',
-    entityType: 'PAYMENT',
-    entityId: payment._id,
-    metadata: {
-      numbers: payment.numbers,
-      amount: payment.amount,
-      ref: payment.transactionReference,
-    },
-    createdAt: new Date().toISOString(),
-  });
-
-  return res.json({ message: 'Payment approved successfully. Numbers confirmed.', payment });
 });
 
 // POST /api/admin/payments/:id/reject
-router.post('/payments/:id/reject', requireAdmin, (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
-  const { reason } = req.body;
-  const payment = memoryPayments.find(p => p._id === id || p.id === id);
-
-  if (!payment) {
-    return res.status(404).json({ error: 'Payment record not found' });
+router.post('/payments/:id/reject', requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const payment = await paymentService.rejectPayment(id, reason, req.user);
+    return res.json({ message: 'Payment rejected. Numbers released back to Available.', payment });
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message || 'Failed to reject payment' });
   }
-
-  payment.status = 'REJECTED';
-  payment.rejectionReason = reason || 'Reference verification failed';
-  payment.verifiedBy = req.user?.id;
-  payment.verifiedAt = new Date().toISOString();
-
-  for (const num of payment.numbers) {
-    const cell = defaultNumbersMap.get(num);
-    if (cell && cell.status === 'PAYMENT_PENDING') {
-      cell.status = 'AVAILABLE';
-      cell.selectedBy = undefined;
-      broadcastNumberUpdate(defaultDraw._id, num, 'AVAILABLE', undefined);
-    }
-  }
-
-  memoryAuditLogs.unshift({
-    _id: 'audit_' + Date.now(),
-    actorId: req.user?.id || 'admin',
-    actorName: req.user?.name || 'Admin',
-    action: 'REJECT_PAYMENT',
-    entityType: 'PAYMENT',
-    entityId: payment._id,
-    metadata: {
-      numbers: payment.numbers,
-      reason: payment.rejectionReason,
-    },
-    createdAt: new Date().toISOString(),
-  });
-
-  return res.json({ message: 'Payment rejected. Numbers released back to Available.', payment });
 });
 
 // GET /api/admin/audit-logs

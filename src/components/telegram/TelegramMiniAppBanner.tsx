@@ -35,17 +35,17 @@ export const TelegramMiniAppBanner: React.FC = () => {
       <div className="flex items-center gap-2">
         <Bot className="w-4 h-4 text-blue-400" />
         <span className="text-slate-300">
-          የቴሌግራም ቦት ይፈልጋሉ? <span className="text-blue-300 font-semibold">@EthioDraw0180Bot</span> በቴሌግራም ተጠቀም
+          የቴሌግራም ቦት ይፈልጋሉ? <span className="text-blue-300 font-semibold">@AdeyDrawBot</span> በቴሌግራም ተጠቀም
         </span>
       </div>
 
       <a
-        href="https://t.me/EthioDraw0180Bot"
+        href="https://t.me/AdeyDrawBot"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-1 text-blue-400 hover:text-blue-300 font-bold text-[11px]"
       >
-        <span>t.me/EthioDraw0180Bot</span>
+        <span>t.me/AdeyDrawBot</span>
         <ExternalLink className="w-3 h-3" />
       </a>
     </div>

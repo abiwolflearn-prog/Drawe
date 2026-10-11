@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+// Disable command buffering so queries fail immediately to fallback store when not connected
+mongoose.set('bufferCommands', false);
+
 const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb+srv://abiwolflearn_db_user:RKerhRgN3KW8fCGA@cluster0.3kp5b57.mongodb.net/adey_draw_db?retryWrites=true&w=majority';
 
 let isConnected = false;
@@ -9,9 +12,9 @@ export async function connectDB(): Promise<void> {
   if (isConnected) return;
 
   try {
-    // Attempt Mongoose connection with 8-second timeout for MongoDB Atlas SSL connection
+    // Attempt Mongoose connection with 4-second timeout for MongoDB Atlas SSL connection
     await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 4000,
     });
     isConnected = true;
     console.log('[Database] Connected to MongoDB Atlas via Mongoose');
@@ -23,5 +26,5 @@ export async function connectDB(): Promise<void> {
 }
 
 export function isFallbackStore(): boolean {
-  return isUsingFallbackStore;
+  return isUsingFallbackStore || mongoose.connection.readyState !== 1;
 }

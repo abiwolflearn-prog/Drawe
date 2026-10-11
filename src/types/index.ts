@@ -192,6 +192,9 @@ export interface IAuditLog {
 }
 
 export function formatEntryNumber(num: number, capacity: number): string {
+  if (capacity <= 1) {
+    return `${num}`;
+  }
   if (capacity <= 99) {
     return num < 10 ? `0${num}` : `${num}`;
   }

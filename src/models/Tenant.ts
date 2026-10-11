@@ -21,6 +21,7 @@ export interface ITenant {
   telegramChannelUrl?: string;
   telegramBotUsername?: string;
   telegramMemberCount?: number;
+  adminTelegramChatId?: string;
   
   isVerified?: boolean;
   isPublic?: boolean;
@@ -58,6 +59,7 @@ const TenantSchema: Schema = new Schema(
     telegramChannelUrl: { type: String, default: '' },
     telegramBotUsername: { type: String, default: '' },
     telegramMemberCount: { type: Number, default: 0 },
+    adminTelegramChatId: { type: String, default: '' },
     
     isVerified: { type: Boolean, default: false },
     isPublic: { type: Boolean, default: true },

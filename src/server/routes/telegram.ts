@@ -1,102 +1,93 @@
 import { Router, Request, Response } from 'express';
-import { defaultDraw, defaultNumbersMap, memoryWinners } from '../store.js';
+import { telegramService, TELEGRAM_CONFIG } from '../services/telegramService.js';
+import { playerService } from '../services/playerService.js';
+import { drawService } from '../services/drawService.js';
 
 const router = Router();
 
-export const BOT_CONFIG = {
-  botUsername: 'AdeyDrawBot',
-  botName: 'አደይ ዕጣ ቦት',
-  miniAppUrl: 'https://ais-dev-i3ft6howwcgixhergnn24k-529287111346.europe-west1.run.app',
-};
-
 // GET /api/telegram/config — Return Telegram Bot config for Mini App links
-router.get('/config', (req: Request, res: Response) => {
+router.get('/config', async (req: Request, res: Response) => {
+  const tenantId = (req.query.tenant as string) || 'tenant_addis';
+  const activeDraw = await drawService.getActiveDraw(tenantId);
+
   return res.json({
-    config: BOT_CONFIG,
-    activeDraw: defaultDraw,
+    config: {
+      botUsername: TELEGRAM_CONFIG.botUsername,
+      botName: 'Drawe Bot (አደይ ዕጣ)',
+      miniAppUrl: `${TELEGRAM_CONFIG.miniAppUrl}?tenant=${tenantId}`,
+      apiUrl: TELEGRAM_CONFIG.apiUrl,
+    },
+    activeDraw: drawService.getPublicDrawDetails(activeDraw),
   });
 });
 
-// POST /api/telegram/auth — Auto-authenticate Telegram Mini App user
-router.post('/auth', (req: Request, res: Response) => {
-  const { user } = req.body;
+// POST /api/telegram/auth — Authenticate Telegram Mini App user using verified initData
+router.post('/auth', async (req: Request, res: Response) => {
+  try {
+    const { initData, user: rawUser, preferredTenantId } = req.body;
 
-  if (!user || !user.id) {
-    return res.status(400).json({ error: 'Invalid Telegram user payload' });
+    let targetUser = rawUser;
+
+    // Cryptographic validation of initData if provided
+    if (initData) {
+      const verification = telegramService.verifyInitData(initData);
+      if (!verification.isValid) {
+        return res.status(401).json({ error: 'Invalid, forged, or expired Telegram authentication payload' });
+      }
+      if (verification.user) {
+        targetUser = verification.user;
+      }
+    } else {
+      // In production, unverified rawUser claims are rejected
+      if (process.env.NODE_ENV === 'production' || !targetUser) {
+        return res.status(401).json({ error: 'Valid Telegram initData is required for authentication' });
+      }
+    }
+
+    if (!targetUser || !targetUser.id) {
+      return res.status(400).json({ error: 'Valid Telegram user payload or initData is required' });
+    }
+
+    // Map through shared PlayerService and issue authoritative JWT
+    const authResult = await playerService.findOrCreateTelegramUser(targetUser, preferredTenantId);
+
+    return res.json({
+      message: 'Telegram Mini App authenticated successfully',
+      user: authResult.user,
+      token: authResult.token,
+      activeTenantId: authResult.activeTenantId,
+      memberships: authResult.memberships,
+    });
+  } catch (error: any) {
+    console.error('[TelegramRoute] Auth error occurred');
+    return res.status(500).json({ error: error.message || 'Telegram authentication failed' });
   }
-
-  // Generate session payload for Telegram user
-  const tgUser = {
-    id: `tg_${user.id}`,
-    name: `${user.first_name}${user.last_name ? ' ' + user.last_name : ''}`,
-    phone: 'Telegram User',
-    role: 'PLAYER',
-    tenantId: 'tenant_addis',
-    telegramUsername: user.username ? `@${user.username}` : undefined,
-  };
-
-  return res.json({
-    message: 'Telegram Mini App authenticated successfully',
-    user: tgUser,
-    token: `tg_token_${user.id}_${Date.now()}`,
-  });
 });
 
 // POST /api/telegram/webhook — Telegram Bot Webhook handler
-router.post('/webhook', (req: Request, res: Response) => {
-  const { message } = req.body;
+router.post('/webhook', async (req: Request, res: Response) => {
+  try {
+    const secretHeader = req.headers['x-telegram-bot-api-secret-token'] as string;
+    if (!telegramService.verifyWebhookSecret(secretHeader)) {
+      return res.status(403).json({ error: 'Invalid or missing webhook secret token' });
+    }
 
-  if (!message || !message.text) {
+    const update = req.body;
+    if (!update) {
+      return res.status(200).send('OK');
+    }
+
+    const responseAction = await telegramService.handleUpdate(update);
+
+    if (responseAction) {
+      return res.json(responseAction);
+    }
+
     return res.status(200).send('OK');
+  } catch (error: any) {
+    console.error('[TelegramRoute] Webhook processing error occurred');
+    return res.status(200).send('OK'); // Always ACK Telegram to prevent webhook retry storms
   }
-
-  const chatId = message.chat.id;
-  const text = message.text.trim();
-
-  let replyText = '';
-  let inlineKeyboard: any = null;
-
-  if (text.startsWith('/start')) {
-    replyText = `ሰላም ${message.from?.first_name || 'ወዳጅ'}! 👋\nእንኳን ወደ አደይ ዕጣ ፕላትፎርም በሰላም መጡ።\n\n🎯 **የአሁኑ ዕጣ:** ${defaultDraw.title}\n💰 **የአንዱ ቁጥር ዋጋ:** ${defaultDraw.pricePerNumber} ETB\n\nከታች ያለውን አዝራር በመጫን የዕጣ ሰሌዳውን በመክፈት ቁጥሮችዎን ይምረጡ!`;
-    
-    inlineKeyboard = [
-      [{ text: '🎯 የዕጣ ሰሌዳ ክፈት (Mini App)', web_app: { url: BOT_CONFIG.miniAppUrl } }],
-      [
-        { text: '📊 የዕጣ ውጤቶች', callback_data: 'cmd_results' },
-        { text: '🏢 የተረጋገጡ አዘጋጆች', callback_data: 'cmd_operators' },
-      ],
-    ];
-  } else if (text.startsWith('/board')) {
-    replyText = `🎯 **${defaultDraw.title}**\n\nየዕጣ ሰሌዳውን በ Mini App ለመክፈት ከታች ያለውን አዝራር ይጫኑ:`;
-    inlineKeyboard = [
-      [{ text: '🎲 ቁጥር ለመምረጥ ቦርድ ክፈት', web_app: { url: BOT_CONFIG.miniAppUrl } }],
-    ];
-  } else if (text.startsWith('/results')) {
-    const latest = memoryWinners[0];
-    replyText = `🏆 **የቅርብ ጊዜ የዕጣ ውጤት:**\n\nRound: ${latest?.drawTitle || 'Round #000'}\nአሸናፊ ቁጥር: #${latest?.number}\nአሸናፊ: ${latest?.playerName}\nየሽልማት መጠን: ${latest?.prizeAmount} ETB`;
-    inlineKeyboard = [
-      [{ text: '🔍 የ SHA-256 ማረጋገጫ ተመልከት', web_app: { url: `${BOT_CONFIG.miniAppUrl}/results` } }],
-    ];
-  } else if (text.startsWith('/operators')) {
-    replyText = `🏢 **የዕጣ አዘጋጆች ማህበረሰብ directory:**\n\nበፕላትፎርሙ ላይ የተመዘገቡ ህጋዊ የ SaaS አዘጋጆችን እና የቴሌግራም ቻናሎቻቸውን ይጎብኙ።`;
-    inlineKeyboard = [
-      [{ text: '🏢 Directory ተመልከት', web_app: { url: `${BOT_CONFIG.miniAppUrl}/operators` } }],
-    ];
-  } else {
-    replyText = `🤖 **01–80 Bot ትእዛዞች:**\n\n/start - ቦቱን ለመጀመር\n/board - የቁጥር ሰሌዳ ለመክፈት\n/results - ያለፉ የዕጣ ውጤቶች\n/operators - የተረጋገጡ አዘጋጆች`;
-    inlineKeyboard = [
-      [{ text: '🚀 Mini App ክፈት', web_app: { url: BOT_CONFIG.miniAppUrl } }],
-    ];
-  }
-
-  // Returns structured webhook JSON response
-  return res.json({
-    method: 'sendMessage',
-    chat_id: chatId,
-    text: replyText,
-    parse_mode: 'Markdown',
-    reply_markup: inlineKeyboard ? { inline_keyboard: inlineKeyboard } : undefined,
-  });
 });
 
 export default router;

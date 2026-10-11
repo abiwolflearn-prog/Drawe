@@ -6,6 +6,9 @@ import { createServer as createViteServer } from 'vite';
 import { connectDB } from './src/db/connect.js';
 import { initializeSocketIO } from './src/server/socket.js';
 import { runDrawEngineTests } from './src/server/tests/drawEngine.js';
+import { runTelegramIntegrationTests } from './src/server/tests/telegramIntegration.js';
+import { runMiniAppInteractiveTests } from './src/server/tests/miniAppCapacityResponsive.js';
+import { runTelegramBotComprehensiveTests } from './src/server/tests/telegramBotComprehensive.js';
 
 import authRouter from './src/server/routes/auth.js';
 import drawsRouter from './src/server/routes/draws.js';
@@ -30,6 +33,28 @@ async function startServer() {
   const passedCount = testResults.filter((r: any) => r.passed).length;
   console.log(`[Test Suite] Draw Engine Tests: ${passedCount}/${testResults.length} PASSED`);
 
+  // Run Telegram Integration Tests
+  runTelegramIntegrationTests().then((tgTests) => {
+    const tgPassed = tgTests.filter((r: any) => r.passed).length;
+    console.log(`[Test Suite] Telegram Integration Tests: ${tgPassed}/${tgTests.length} PASSED`);
+    tgTests.forEach(t => {
+      console.log(`  ${t.passed ? '✓' : '✗'} ${t.name}: ${t.message}`);
+    });
+  }).catch((err) => {
+    console.error('[Test Suite] Telegram Integration Tests error:', err);
+  });
+
+  // Run Telegram Mini App Interactive Tests
+  runMiniAppInteractiveTests().then((miniAppTests) => {
+    const miniAppPassed = miniAppTests.filter((r: any) => r.passed).length;
+    console.log(`[Test Suite] Mini App Interactive Tests: ${miniAppPassed}/${miniAppTests.length} PASSED`);
+    miniAppTests.forEach(t => {
+      console.log(`  ${t.passed ? '✓' : '✗'} ${t.name}: ${t.message}`);
+    });
+  }).catch((err) => {
+    console.error('[Test Suite] Mini App Interactive Tests error:', err);
+  });
+
   // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -44,6 +69,30 @@ async function startServer() {
       service: 'Adey Draw Platform API with Socket.IO Real-Time Sync',
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
+    });
+  });
+
+  // Telegram Integration & Mini App Tests Endpoint
+  app.get('/api/tests/telegram', async (req: Request, res: Response) => {
+    const drawTests = runDrawEngineTests();
+    const tgTests = await runTelegramIntegrationTests();
+    const miniAppTests = await runMiniAppInteractiveTests();
+    const botCompTests = await runTelegramBotComprehensiveTests();
+
+    const totalPassed =
+      drawTests.filter(t => t.passed).length +
+      tgTests.filter(t => t.passed).length +
+      miniAppTests.filter(t => t.passed).length +
+      botCompTests.filter(t => t.passed).length;
+    const totalCount = drawTests.length + tgTests.length + miniAppTests.length + botCompTests.length;
+
+    res.json({
+      status: totalPassed === totalCount ? 'ALL_PASSED' : 'SOME_FAILED',
+      summary: `${totalPassed}/${totalCount} tests passed`,
+      drawEngineTests: drawTests,
+      telegramIntegrationTests: tgTests,
+      miniAppInteractiveTests: miniAppTests,
+      telegramBotComprehensiveTests: botCompTests,
     });
   });
 

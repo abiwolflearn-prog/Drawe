@@ -7,7 +7,7 @@ import { isFallbackStore } from '../../db/connect.js';
 const router = Router();
 
 // In-memory fallback user store when MongoDB is not connected
-const memoryUsers: any[] = [
+export const memoryUsers: any[] = [
   {
     _id: 'usr_super_01',
     id: 'usr_super_01',
@@ -15,6 +15,7 @@ const memoryUsers: any[] = [
     email: 'superadmin@draw.com',
     passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
     role: 'SUPER_ADMIN',
+    telegramUserId: '77700000',
     status: 'ACTIVE',
     createdAt: new Date().toISOString(),
   },
@@ -26,6 +27,19 @@ const memoryUsers: any[] = [
     email: 'admin@draw.com',
     passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
     role: 'ADMIN',
+    telegramUserId: '77700001',
+    status: 'ACTIVE',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_admin_02',
+    id: 'usr_admin_02',
+    tenantId: 'tenant_hawassa',
+    name: 'Hawassa Operator Admin',
+    email: 'hawassa@draw.com',
+    passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
+    role: 'ADMIN',
+    telegramUserId: '77700002',
     status: 'ACTIVE',
     createdAt: new Date().toISOString(),
   },
@@ -37,6 +51,7 @@ const memoryUsers: any[] = [
     email: 'player@draw.com',
     passwordHash: '$2a$10$X8a3V/S5.U53L1.0M.vW/u4S2QkS5H8qKz3L2W/X8a3V/S5.U53L', // password123
     role: 'PLAYER',
+    telegramUserId: '12345678',
     status: 'ACTIVE',
     createdAt: new Date().toISOString(),
   }
