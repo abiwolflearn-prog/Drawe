@@ -54,7 +54,7 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
       <Header />
 
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 flex items-center justify-center p-4 pb-28 md:pb-8">
         <Card className="max-w-md w-full p-6 sm:p-8 space-y-6 bg-[#11141D] border-white/10 shadow-2xl">
           <div className="text-center space-y-2">
             <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto">

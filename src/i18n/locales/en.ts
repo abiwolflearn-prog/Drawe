@@ -20,9 +20,11 @@ export const en = {
   // Navigation
   nav: {
     home: 'Home',
+    draws: 'Draws',
+    myNumbers: 'My Numbers',
     activeDraw: 'Active Draw',
     operators: 'Operators',
-    results: 'Results Archive',
+    results: 'Results',
     howItWorks: 'How It Works',
     mySelections: 'My Selections',
     adminPortal: 'Admin Portal',

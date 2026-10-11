@@ -109,7 +109,7 @@ export const HomePage: React.FC = () => {
       <TelegramMiniAppBanner />
       {!isTelegramWebApp && <Header />}
 
-      <main className="flex-1 mx-auto max-w-5xl w-full p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <main className="flex-1 mx-auto max-w-5xl w-full p-3 sm:p-6 space-y-4 sm:space-y-6 pb-28 md:pb-8">
         {/* Persistent Conflict / Selection Error Banner */}
         {selectionError && (
           <div className="p-3 bg-rose-950/90 border border-rose-500/60 rounded-2xl flex items-center justify-between text-xs text-rose-200 animate-shake shadow-lg shadow-rose-950/40">

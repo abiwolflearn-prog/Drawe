@@ -46,7 +46,7 @@ export const OperatorsPage: React.FC = () => {
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
       <Header />
 
-      <main className="flex-1 mx-auto max-w-6xl w-full p-4 sm:p-6 space-y-8">
+      <main className="flex-1 mx-auto max-w-6xl w-full p-4 sm:p-6 space-y-8 pb-28 md:pb-8">
         {/* Header Title Banner */}
         <div className="text-center space-y-2 pt-4">
           <span className="text-xs font-bold text-blue-400 uppercase tracking-widest flex items-center justify-center gap-1.5">

@@ -3,6 +3,7 @@ import { runTelegramIntegrationTests } from './telegramIntegration.js';
 import { runMiniAppInteractiveTests } from './miniAppCapacityResponsive.js';
 import { runAdminNotificationSecurityTests } from './adminNotificationSecurity.js';
 import { runTelegramBotComprehensiveTests } from './telegramBotComprehensive.js';
+import { runBottomNavTests } from './bottomNavValidation.js';
 
 async function main() {
   console.log('====================================================');
@@ -73,6 +74,20 @@ async function main() {
   console.log('\n--- 5. TELEGRAM BOT COMMANDS & DEDUPLICATION COMPREHENSIVE TESTS ---');
   const botCompResults = await runTelegramBotComprehensiveTests();
   for (const r of botCompResults) {
+    totalTests++;
+    if (r.passed) {
+      totalPassed++;
+      console.log(`  [PASS] ${r.name}`);
+    } else {
+      totalFailed++;
+      console.error(`  [FAIL] ${r.name}: ${r.message}`);
+    }
+  }
+
+  // 6. Telegram Mini App Bottom Navigation Bar Tests
+  console.log('\n--- 6. TELEGRAM MINI APP BOTTOM NAVIGATION BAR TESTS ---');
+  const bottomNavResults = runBottomNavTests();
+  for (const r of bottomNavResults) {
     totalTests++;
     if (r.passed) {
       totalPassed++;

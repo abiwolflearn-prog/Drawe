@@ -24,6 +24,7 @@ import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage.js';
 import { SuperAdminDashboardPage } from './pages/super-admin/SuperAdminDashboardPage.js';
 import { SuperAdminOperatorsPage } from './pages/super-admin/SuperAdminOperatorsPage.js';
 import { SuperAdminAuditLogsPage } from './pages/super-admin/SuperAdminAuditLogsPage.js';
+import { BottomNav } from './components/layout/BottomNav.js';
 
 export default function App() {
   return (
@@ -63,6 +64,8 @@ export default function App() {
                   {/* Fallback */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
+                {/* Fixed Mobile & Telegram Mini App Bottom Navigation Bar */}
+                <BottomNav />
               </BrowserRouter>
             </DrawProvider>
           </SocketProvider>

@@ -19,10 +19,12 @@ export const am = {
 
   // Navigation
   nav: {
-    home: 'መነሻ',
+    home: 'ዋና ገጽ',
+    draws: 'ዕጣዎች',
+    myNumbers: 'ቁጥሮቼ',
     activeDraw: 'የአሁኑ ዕጣ',
     operators: 'አዘጋጆች',
-    results: 'ውጤቶች Archive',
+    results: 'ውጤቶች',
     howItWorks: 'እንዴት ይሰራል?',
     mySelections: 'የእኔ ምርጫዎች',
     adminPortal: 'የአድሚን ፖርታል',

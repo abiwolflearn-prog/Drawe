@@ -77,7 +77,7 @@ export const OperatorProfilePage: React.FC = () => {
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
       <Header />
 
-      <main className="flex-1 mx-auto max-w-4xl w-full p-4 sm:p-6 space-y-6">
+      <main className="flex-1 mx-auto max-w-4xl w-full p-4 sm:p-6 space-y-6 pb-28 md:pb-8">
         {/* Profile Banner Card */}
         <Card className="p-6 bg-gradient-to-br from-[#121622] to-[#1A2030] border-blue-500/30 shadow-2xl space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
