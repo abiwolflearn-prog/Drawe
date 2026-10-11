@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Header } from '../../components/layout/Header.js';
 import { Footer } from '../../components/layout/Footer.js';
 import { Card } from '../../components/ui/Card.js';
 import { Button } from '../../components/ui/Button.js';
@@ -48,8 +47,7 @@ export const OperatorProfilePage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center text-slate-500 text-xs font-mono">
+        <main className="flex-1 flex items-center justify-center text-slate-500 text-xs font-mono pt-[max(1rem,env(safe-area-inset-top))]">
           Loading operator profile...
         </main>
       </div>
@@ -59,8 +57,7 @@ export const OperatorProfilePage: React.FC = () => {
   if (!operator) {
     return (
       <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <main className="flex-1 flex items-center justify-center p-4 pt-[max(1rem,env(safe-area-inset-top))]">
           <Card className="max-w-md w-full p-6 text-center space-y-4">
             <Building2 className="w-12 h-12 text-slate-600 mx-auto" />
             <h2 className="text-xl font-bold text-white">Operator Profile Not Found</h2>
@@ -75,9 +72,7 @@ export const OperatorProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
-      <Header />
-
-      <main className="flex-1 mx-auto max-w-4xl w-full p-4 sm:p-6 space-y-6 pb-28 md:pb-8">
+      <main className="flex-1 mx-auto max-w-4xl w-full p-4 sm:p-6 space-y-6 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-6 pb-28 sm:pb-32">
         {/* Profile Banner Card */}
         <Card className="p-6 bg-gradient-to-br from-[#121622] to-[#1A2030] border-blue-500/30 shadow-2xl space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

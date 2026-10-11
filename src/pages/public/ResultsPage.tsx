@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from '../../components/layout/Header.js';
 import { Footer } from '../../components/layout/Footer.js';
 import { Card } from '../../components/ui/Card.js';
 import { Badge } from '../../components/ui/Badge.js';
 import { Button } from '../../components/ui/Button.js';
+import { LanguageSelector } from '../../components/ui/LanguageSelector.js';
 import { ProvablyFairModal } from '../../components/draw/ProvablyFairModal.js';
 import { useI18n } from '../../i18n/index.js';
 import { Trophy, Star, ShieldCheck, History } from 'lucide-react';
@@ -44,15 +44,16 @@ export const ResultsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
-      <Header />
-
-      <main className="flex-1 mx-auto max-w-5xl w-full p-4 sm:p-6 space-y-8 pb-28 md:pb-8">
+      <main className="flex-1 mx-auto max-w-5xl w-full p-4 sm:p-6 space-y-8 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-6 pb-28 sm:pb-32">
         {/* Header Title */}
-        <div className="text-center space-y-2 pt-4">
-          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
-            <Trophy className="w-4 h-4 text-amber-400" />
-            Auditable Draw History & Cryptographic Verification
-          </span>
+        <div className="text-center space-y-2 pt-2">
+          <div className="flex items-center justify-between max-w-xl mx-auto mb-2">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
+              <Trophy className="w-4 h-4 text-amber-400" />
+              Auditable Draw History & Cryptographic Verification
+            </span>
+            <LanguageSelector />
+          </div>
           <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
             {t('results.title')}
           </h1>
@@ -140,8 +141,11 @@ export const ResultsPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 font-mono">
-                  {winners.map((win) => (
-                    <tr key={win._id} className="hover:bg-white/[0.02]">
+                  {winners.map((win, idx) => (
+                    <tr
+                      key={win._id || win.id || `winner-${win.drawId || 'draw'}-${win.number}-${idx}`}
+                      className="hover:bg-white/[0.02]"
+                    >
                       <td className="p-3 font-bold text-slate-100 font-sans">{win.drawTitle}</td>
                       <td className="p-3 text-amber-300 font-bold">{win.label || `${win.position || 1}st Winner`}</td>
                       <td className="p-3 font-black text-emerald-400 text-sm">

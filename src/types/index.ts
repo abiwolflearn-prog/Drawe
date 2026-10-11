@@ -125,7 +125,8 @@ export interface OperatorAccountInfo {
 }
 
 export interface IWinner {
-  _id: string;
+  _id?: string;
+  id?: string;
   tenantId: string;
   drawId: string;
   drawTitle: string;
@@ -181,6 +182,7 @@ export interface ITenant {
 
 export interface IAuditLog {
   _id: string;
+  id?: string;
   tenantId?: string;
   actorId: string;
   actorName: string;

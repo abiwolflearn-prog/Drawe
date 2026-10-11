@@ -15,6 +15,7 @@ import { OperatorsPage } from './pages/public/OperatorsPage.js';
 import { OperatorProfilePage } from './pages/public/OperatorProfilePage.js';
 
 import { PlayerDashboardPage } from './pages/player/PlayerDashboardPage.js';
+import { PortalsHubPage } from './pages/public/PortalsHubPage.js';
 
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 import { AdminPaymentsPage } from './pages/admin/AdminPaymentsPage.js';
@@ -46,6 +47,10 @@ export default function App() {
 
                   {/* Authenticated Player Routes */}
                   <Route path="/dashboard" element={<PlayerDashboardPage />} />
+                  <Route path="/user" element={<PlayerDashboardPage />} />
+                  <Route path="/profile" element={<PlayerDashboardPage />} />
+                  <Route path="/portals" element={<PortalsHubPage />} />
+                  <Route path="/roles" element={<PortalsHubPage />} />
 
                   {/* Tenant Admin Operator Control Routes */}
                   <Route path="/admin" element={<AdminDashboardPage />} />
@@ -56,6 +61,7 @@ export default function App() {
 
                   {/* Platform Super Admin SaaS Control Routes */}
                   <Route path="/super-admin" element={<SuperAdminDashboardPage />} />
+                  <Route path="/superadmin" element={<SuperAdminDashboardPage />} />
                   <Route path="/super-admin/operators" element={<SuperAdminOperatorsPage />} />
                   <Route path="/super-admin/draws" element={<AdminDrawsPage />} />
                   <Route path="/super-admin/payments" element={<AdminPaymentsPage />} />

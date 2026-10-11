@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from '../../components/layout/Header.js';
 import { Footer } from '../../components/layout/Footer.js';
-import { TelegramMiniAppBanner } from '../../components/telegram/TelegramMiniAppBanner.js';
 import { RoundHeaderCard } from '../../components/draw/RoundHeaderCard.js';
 import { NumberBoardGrid } from '../../components/number-board/NumberBoardGrid.js';
 import { BoardLegend } from '../../components/number-board/BoardLegend.js';
@@ -106,10 +104,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col selection:bg-rose-500 selection:text-white">
-      <TelegramMiniAppBanner />
-      {!isTelegramWebApp && <Header />}
-
-      <main className="flex-1 mx-auto max-w-5xl w-full p-3 sm:p-6 space-y-4 sm:space-y-6 pb-28 md:pb-8">
+      <main className="flex-1 mx-auto max-w-5xl w-full p-3 sm:p-6 space-y-4 sm:space-y-6 pt-[max(0.75rem,env(safe-area-inset-top))] sm:pt-6 pb-28 sm:pb-32">
         {/* Persistent Conflict / Selection Error Banner */}
         {selectionError && (
           <div className="p-3 bg-rose-950/90 border border-rose-500/60 rounded-2xl flex items-center justify-between text-xs text-rose-200 animate-shake shadow-lg shadow-rose-950/40">

@@ -5,7 +5,7 @@ import { useSocket } from '../../context/SocketContext.js';
 import { useI18n } from '../../i18n/index.js';
 import { Button } from '../ui/Button.js';
 import { LanguageSelector } from '../ui/LanguageSelector.js';
-import { Shield, User, LogOut, Ticket, Radio, Users } from 'lucide-react';
+import { User, LogOut, Radio, Users } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -42,35 +42,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Zone 2: Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          <Link to="/" className="hover:text-blue-400 transition-colors">
-            {t('nav.activeDraw')}
-          </Link>
-          <Link to="/operators" className="hover:text-blue-400 transition-colors flex items-center gap-1">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            {t('nav.operators')}
-          </Link>
-          <Link to="/results" className="hover:text-blue-400 transition-colors">
-            {t('nav.results')}
-          </Link>
-          <Link to="/how-it-works" className="hover:text-blue-400 transition-colors">
-            {t('nav.howItWorks')}
-          </Link>
-          {isAuthenticated && (
-            <Link to="/dashboard" className="hover:text-blue-400 transition-colors flex items-center gap-1">
-              <Ticket className="w-3.5 h-3.5 text-blue-400" />
-              {t('nav.mySelections')}
-            </Link>
-          )}
-          {isAdmin && (
-            <Link to="/admin" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5" />
-              {t('nav.adminPortal')}
-            </Link>
-          )}
-        </nav>
-
         {/* Zone 3: Language Selector & User Actions */}
         <div className="flex items-center gap-3">
           <LanguageSelector />
@@ -84,7 +55,11 @@ export const Header: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigate(isAdmin ? '/admin' : '/dashboard')}
+                onClick={() => {
+                  if (user?.role === 'SUPER_ADMIN') navigate('/super-admin');
+                  else if (user?.role === 'ADMIN') navigate('/admin');
+                  else navigate('/user');
+                }}
                 className="gap-1.5"
               >
                 <User className="w-3.5 h-3.5 text-blue-400" />

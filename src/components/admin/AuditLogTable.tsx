@@ -29,8 +29,8 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({ logs }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-white/5 text-xs">
-          {logs.map((log) => (
-            <tr key={log._id} className="hover:bg-white/[0.02]">
+          {logs.map((log, idx) => (
+            <tr key={log._id || log.id || `log-${idx}`} className="hover:bg-white/[0.02]">
               <td className="p-3 font-mono text-slate-400 text-[11px] tabular-nums">
                 {new Date(log.createdAt).toLocaleString()}
               </td>

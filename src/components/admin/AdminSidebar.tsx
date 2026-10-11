@@ -13,7 +13,10 @@ import {
   FileText, 
   ShieldAlert, 
   Settings,
-  Building2
+  Building2,
+  User,
+  Crown,
+  Layers
 } from 'lucide-react';
 
 export const AdminSidebar: React.FC = () => {
@@ -67,6 +70,34 @@ export const AdminSidebar: React.FC = () => {
           );
         })}
       </nav>
+
+      {/* Role & Portal Navigation */}
+      <div className="p-3 mt-auto border-t border-white/5 space-y-1">
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 block">
+          Portals & Roles
+        </span>
+        <NavLink
+          to="/user"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+        >
+          <User className="w-4 h-4 shrink-0 text-blue-400" />
+          <span>User / Player Page</span>
+        </NavLink>
+        <NavLink
+          to="/super-admin"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+        >
+          <Crown className="w-4 h-4 shrink-0 text-rose-400" />
+          <span>Super Admin Page</span>
+        </NavLink>
+        <NavLink
+          to="/portals"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+        >
+          <Layers className="w-4 h-4 shrink-0 text-amber-400" />
+          <span>Portals Hub</span>
+        </NavLink>
+      </div>
     </aside>
   );
 };

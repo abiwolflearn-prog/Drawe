@@ -22,7 +22,7 @@ export const SelectionSummaryBar: React.FC<SelectionSummaryBarProps> = ({
 
   if (selectedNumbers.length === 0) {
     return (
-      <div className="sticky bottom-20 md:bottom-4 z-30 mx-auto max-w-2xl px-4">
+      <div className="sticky bottom-20 z-30 mx-auto max-w-2xl px-4">
         <div className="flex items-center justify-between p-4 bg-[#11141D]/90 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl text-slate-400 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-4 h-4 text-blue-400 shrink-0" />
@@ -35,7 +35,7 @@ export const SelectionSummaryBar: React.FC<SelectionSummaryBarProps> = ({
   }
 
   return (
-    <div className="sticky bottom-20 md:bottom-4 z-30 mx-auto max-w-2xl px-4 animate-in slide-in-from-bottom-4 duration-200">
+    <div className="sticky bottom-20 z-30 mx-auto max-w-2xl px-4 animate-in slide-in-from-bottom-4 duration-200">
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-4 gap-3 bg-[#161B28]/95 backdrop-blur-md border border-rose-500/30 rounded-2xl shadow-2xl shadow-black/80">
         <div className="flex items-center justify-between sm:justify-start gap-4">
           <div className="flex items-center gap-2">

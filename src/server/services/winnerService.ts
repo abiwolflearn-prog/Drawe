@@ -41,7 +41,8 @@ export class WinnerService {
     }
 
     return {
-      id: w._id?.toString() || w.id,
+      _id: w._id?.toString() || w.id || `win_${w.drawId || 'round'}_${w.number}`,
+      id: w._id?.toString() || w.id || `win_${w.drawId || 'round'}_${w.number}`,
       tenantId: w.tenantId?.toString() || w.tenantId,
       drawId: w.drawId?.toString() || w.drawId,
       drawTitle: w.drawTitle || 'Community Draw',

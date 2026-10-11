@@ -12,11 +12,13 @@ import {
   Dices, 
   CreditCard, 
   ShieldAlert, 
-  Settings 
+  Settings,
+  User,
+  Layers
 } from 'lucide-react';
 
 export const SuperAdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading, login } = useAuth();
   const { t } = useI18n();
 
   if (isLoading) {
@@ -32,18 +34,36 @@ export const SuperAdminLayout: React.FC<{ children: React.ReactNode }> = ({ chil
       <div className="min-h-screen bg-[#090B0E] text-slate-100 flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center p-4">
-          <Card className="max-w-md w-full p-6 text-center space-y-4 bg-[#141824] border-rose-500/30">
+          <Card className="max-w-md w-full p-6 text-center space-y-4 bg-[#141824] border-rose-500/30 shadow-2xl">
             <ShieldCheck className="w-12 h-12 text-rose-500 mx-auto" />
             <h2 className="text-xl font-bold text-white">Super Admin Access Required</h2>
             <p className="text-xs text-slate-400 leading-relaxed">
-              You must be logged in with a Super Admin platform account (`superadmin@draw.com`) to view the SaaS control panel.
+              You must be logged in with a Super Admin platform account (<code className="text-rose-300">superadmin@draw.com</code>) to view the SaaS control panel.
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
               <Link
                 to="/login"
-                className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl"
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl"
               >
-                Log In as Super Admin
+                Log In
+              </Link>
+              <button
+                type="button"
+                onClick={async () => {
+                  await login('superadmin@draw.com', 'password123');
+                }}
+                className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-colors shadow-lg shadow-rose-950/40"
+              >
+                1-Click Demo Super Admin
+              </button>
+            </div>
+            <div className="pt-2 border-t border-white/5 flex items-center justify-center gap-4 text-xs">
+              <Link to="/user" className="text-slate-400 hover:text-slate-200 underline">
+                User Page
+              </Link>
+              <span className="text-slate-600">•</span>
+              <Link to="/admin" className="text-slate-400 hover:text-slate-200 underline">
+                Operator Admin Page
               </Link>
             </div>
           </Card>
@@ -95,6 +115,34 @@ export const SuperAdminLayout: React.FC<{ children: React.ReactNode }> = ({ chil
               );
             })}
           </nav>
+
+          {/* Role & Portal Navigation */}
+          <div className="p-3 mt-auto border-t border-white/5 space-y-1">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 block">
+              Portals & Roles
+            </span>
+            <NavLink
+              to="/user"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <User className="w-4 h-4 shrink-0 text-blue-400" />
+              <span>User / Player Page</span>
+            </NavLink>
+            <NavLink
+              to="/admin"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <ShieldCheck className="w-4 h-4 shrink-0 text-amber-400" />
+              <span>Operator Admin Page</span>
+            </NavLink>
+            <NavLink
+              to="/portals"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <Layers className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>Portals Hub</span>
+            </NavLink>
+          </div>
         </aside>
 
         {/* Content View */}
